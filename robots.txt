@@ -1,0 +1,28 @@
+# ==========================================
+# SUPER STRICT ROBOTS.TXT FOR GITHUB PAGES
+# GOAL: Block Meta/Facebook Bots | SEO: N/A
+# ==========================================
+
+# 1. Block Major Meta Crawlers Explicitly
+# This rule has higher priority than the wildcard (*) below
+User-agent: facebookbot
+User-agent: facebookexternalhit
+User-agent: facebookcatalog
+User-agent: mbot
+User-agent: appcrawler
+User-agent: metae
+User-agent: wadup
+User-agent: WhatsApp/2.*
+Disallow: /
+Crawl-delay: 10
+
+# 2. Block Generic Social Media Scrapers (Optional but recommended)
+User-agent: Pinterestbot
+User-agent: Twitterbot
+User-agent: Googlebot (Images Only, if you want to block images)
+Disallow: /
+Crawl-delay: 10
+
+# 3. Allow Everything Else (Human Browsers & Non-Meta Bots)
+User-agent: *
+Disallow:
