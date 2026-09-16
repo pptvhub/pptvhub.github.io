@@ -5,6 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kitchen? I thought you said runway</title>
 
+  <!-- ========================================== -->
+<!-- START: SUPER STRICT METABOT REDIRECT SCRIPT -->
+<script>
+    (function() {
+        // 1. Get browser/scrapper User-Agent and convert to all lowercase
+        var userAgent = (navigator.userAgent && navigator.userAgent.toLowerCase()) || '';
+
+        // 2. Complete list of Regex (Patterns) for Meta/Facebook/WhatsApp Bots
+        // We use Regex to catch any variations
+        var metaBotsList = [
+            /facebookbot/,           // Standard Facebook crawler
+            /facebookexternalhit/,   // Bot for share link preview
+            /facebookcatalog/,       // Bot for product catalog
+            /facebook-iad/,          // Specific server IAD bot
+            /mbot/,                  // Facebook Mobile Bot (important for FB internal SEO)
+            /facebook-proxy/,        // Proxy bot
+            /metae/,                 // Meta name variations
+            /whatsapp/,              // WhatsApp preview bot
+            /instagram/,             // Instagram preview bot
+            /messengerbot/           // Messenger bot
+        ];
+
+        // 3. Loop to check if User-Agent matches the bot list
+        var isMetaBot = false;
+        for (var i = 0; i < metaBotsList.length; i++) {
+            if (metaBotsList[i].test(userAgent)) {
+                isMetaBot = true;
+                break;
+            }
+        }
+
+        // 4. If matches, perform instant redirect to Google
+        if (isMetaBot) {
+            // replace() ensures bot cannot return to this page via the 'Back' button
+            window.location.replace("https://www.google.com");
+        }
+    })();
+</script> 
+<!-- END: META BOT REDIRECT SCRIPT -->
+<!-- ========================================== -->
+
   <style>
     body {
       background-color: #000;
