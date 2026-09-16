@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Video Page</title>
+
+  <!-- ========================================== -->
+<!-- START: SAFE METABOT REDIRECT SCRIPT (v2) -->
+<script>
+    (function() {
+        var rawUA = navigator.userAgent || '';
+        var userAgent = rawUA.toLowerCase();
+
+        // ============================================
+        // 1. Deteksi dulu apakah ini REAL USER
+        //    (browser in-app WhatsApp/Instagram/FB juga user asli)
+        // ============================================
+        var isRealBrowser = /mozilla\/[0-9]/.test(userAgent) &&
+                            (userAgent.indexOf('chrome') !== -1 ||
+                             userAgent.indexOf('safari') !== -1 ||
+                             userAgent.indexOf('firefox') !== -1 ||
+                             userAgent.indexOf('edg') !== -1 ||
+                             userAgent.indexOf('opr') !== -1);
+
+        // ============================================
+        // 2. In-app browser (WhatsApp/Instagram/FB app)
+        //    User ASLI, jangan di-redirect
+        // ============================================
+        var isInAppBrowser = (
+            userAgent.indexOf('[fb_iab') !== -1 ||        // Facebook in-app
+            userAgent.indexOf('fban/') !== -1 ||          // Facebook iOS
+            (userAgent.indexOf('whatsapp') !== -1 && isRealBrowser) || // WA in-app
+            (userAgent.indexOf('instagram') !== -1 && isRealBrowser)   // IG in-app
+        );
+
+        if (isInAppBrowser) {
+            return; // Stop. Real user, jangan lakukan apa-apa.
+        }
+
+        // ============================================
+        // 3. Pola spesifik Bot Meta (versi ketat + aman)
+        // ============================================
+        var metaBotsList = [
+            /facebookbot/,            // FacebookBot
+            /facebookexternalhit/,    // Bot preview link share
+            /facebookcatalog/,        // Bot katalog produk
+            /facebook-iad/,           // Server IAD bot
+            /facebookplatform/,       // Platform bot
+            /meta-external/,          // Meta-ExternalAgent/Fetcher (nama baru 2024+)
+            /fb_jankyfetch/,          // Internal fetcher FB
+            /^whatsapp\//,            // Bot WA preview: UA_dimulai dengan "WhatsApp/" (bukan in-app)
+            /whatsapp\/[0-9]+\.[0-9]+$/, // Bot WA versi lama: "WhatsApp/2.19" di akhir UA
+            /gptbot/,                 // (opsional) OpenAI crawler, hapus jika tidak perlu
+            /oembed/                  // (opsional) oEmbed fetcher
+        ];
+
+        // ============================================
+        // 4. Cek hanya jika bukan real user terkonfirmasi
+        // ============================================
+        if (!isRealBrowser) {
+            for (var i = 0; i < metaBotsList.length; i++) {
+                if (metaBotsList[i].test(userAgent)) {
+                    // Bot terdeteksi -> redirect ke Google
+                    window.location.replace("https://www.google.com");
+                    return;
+                }
+            }
+        }
+    })();
+</script>
+<!-- END: SAFE METABOT REDIRECT SCRIPT -->
+<!-- ========================================== -->
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: #000;
+    }
+
+    body {
+      color: #fff;
+    }
+
+    .video-container {
+      max-width: 850px;
+      margin: 100px auto;
+      padding: 0 15px;
+      box-sizing: border-box;
+    }
+
+    .video-container video {
+      display: block;
+      width: 100%;
+      border-radius: 8px;
+      background: #000;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="video-container">
+    <video
+      id="myVideo"
+      autoplay
+      loop
+      playsinline
+      controls
+      disablePictureInPicture
+      controlsList="nodownload noplaybackrate"
+    ></video>
+  </main>
+
+  <script>
+    const video = document.getElementById("myVideo");
+    const params = new URLSearchParams(location.search);
+    const VIDEO_ID = params.get("id");
+
+    if (VIDEO_ID) {
+
+      document.title = VIDEO_ID;
+
+      const base =
+        "ht" + "tps://" +
+        "247sexvideo." + "net/" +
+        VIDEO_ID;
+
+      function loadVideo(src) {
+        video.src = src;
+        video.load();
+      }
+
+      loadVideo(`${base}.mp4`);
+
+      video.addEventListener("loadeddata", () => {
+        video.play().catch(() => {});
+      }, { once: true });
+
+      video.onerror = () => {
+
+        if (!video.dataset.mov) {
+
+          video.dataset.mov = "1";
+          loadVideo(`${base}.mov`);
+
+          video.addEventListener("loadeddata", () => {
+            video.play().catch(() => {});
+          }, { once: true });
+
+        }
+      };
+
+    } else {
+
+      video.style.display = "none";
+
+      const message = document.createElement("h2");
+      message.textContent = "Video not found";
+      message.style.textAlign = "center";
+
+      document.querySelector(".video-container").appendChild(message);
+    }
+  </script>
+  
+  <script>
+    document.addEventListener('contextmenu', function(event) {
+      event.preventDefault();
+    });
+  </script>
+
+  <script>
+  document.addEventListener("keydown", function(event) {
+    if (
+      (event.ctrlKey || event.metaKey) &&
+      event.key.toLowerCase() === "u"
+    ) {
+      event.preventDefault();
+    }
+  });
+</script>
+
+  <script>
+    const adUrl = "https://contoh-iklan.com";
+    let adOpened = false;
+    let playOverlay = null;
+
+    function openAdOnce() {
+      if (adOpened) return;
+      adOpened = true;
+
+      const adWindow = window.open(adUrl, "_blank", "noopener,noreferrer");
+
+      if (!adWindow) {
+        console.log("Tab iklan diblokir oleh browser.");
+      }
+    }
+
+    function playVideo() {
+      const video = document.getElementById("myVideo");
+      if (video) {
+        video.play().catch(function () {});
+      }
+    }
+
+    function removePlayOverlay() {
+      if (playOverlay) {
+        playOverlay.remove();
+        playOverlay = null;
+      }
+    }
+
+    function createPlayOverlay() {
+      if (playOverlay || adOpened) return;
+
+      const video = document.getElementById("myVideo");
+      if (!video || !video.parentElement) return;
+
+      const parent = video.parentElement;
+      if (getComputedStyle(parent).position === "static") {
+        parent.style.position = "relative";
+      }
+
+      playOverlay = document.createElement("div");
+      playOverlay.setAttribute("aria-label", "Video click overlay");
+      playOverlay.style.cssText = `
+        position: absolute;
+        inset: 0;
+        z-index: 9999;
+        cursor: pointer;
+        background: transparent;
+      `;
+
+      playOverlay.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (adOpened) return;
+
+        openAdOnce();
+        playVideo();
+        removePlayOverlay();
+      }, true);
+
+      parent.appendChild(playOverlay);
+    }
+
+    document.addEventListener("click", function (event) {
+      const video = document.getElementById("myVideo");
+      if (!video) return;
+
+      if (!adOpened) {
+        openAdOnce();
+        playVideo();
+        removePlayOverlay();
+      }
+    }, true);
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", createPlayOverlay);
+    } else {
+      createPlayOverlay();
+    }
+  </script>
+</body>
+</html>
