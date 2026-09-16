@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Video Page</title>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: #000;
+    }
+
+    body {
+      color: #fff;
+    }
+
+    .video-container {
+      max-width: 800px;
+      margin: 100px auto;
+      padding: 0 15px;
+      box-sizing: border-box;
+    }
+
+    .video-container video {
+      display: block;
+      width: 100%;
+      border-radius: 8px;
+      background: #000;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="video-container">
+    <video
+      id="myVideo"
+      autoplay
+      loop
+      playsinline
+      controls
+      controlsList="nodownload noplaybackrate"
+    ></video>
+  </main>
+
+  <script>
+    const video = document.getElementById("myVideo");
+    const params = new URLSearchParams(location.search);
+    const VIDEO_ID = params.get("id");
+
+    if (VIDEO_ID) {
+
+      document.title = VIDEO_ID;
+
+      const base = `https://cdn.baddiehub.com/${VIDEO_ID}`;
+
+      function loadVideo(src) {
+        video.src = src;
+        video.load();
+      }
+
+      loadVideo(`${base}.mp4`);
+
+      video.addEventListener("loadeddata", () => {
+        video.play().catch(() => {});
+      }, { once: true });
+
+      video.onerror = () => {
+
+        if (!video.dataset.mov) {
+
+          video.dataset.mov = "1";
+          loadVideo(`${base}.mov`);
+
+          video.addEventListener("loadeddata", () => {
+            video.play().catch(() => {});
+          }, { once: true });
+
+        }
+      };
+
+    } else {
+
+      video.style.display = "none";
+
+      const message = document.createElement("h2");
+      message.textContent = "Video not found";
+      message.style.textAlign = "center";
+
+      document.querySelector(".video-container").appendChild(message);
+    }
+  </script>
+
+  <script>
+    document.addEventListener('contextmenu', function(event) {
+      event.preventDefault();
+    });
+  </script>
+
+  <script>
+    const adUrl = "https://contoh-iklan.com";
+    let adOpened = false;
+    let playOverlay = null;
+
+    function openAdOnce() {
+      if (adOpened) return;
+      adOpened = true;
+
+      const adWindow = window.open(adUrl, "_blank", "noopener,noreferrer");
+
+      if (!adWindow) {
+        console.log("Tab iklan diblokir oleh browser.");
+      }
+    }
+
+    function playVideo() {
+      const video = document.getElementById("myVideo");
+      if (video) {
+        video.play().catch(function () {});
+      }
+    }
+
+    function removePlayOverlay() {
+      if (playOverlay) {
+        playOverlay.remove();
+        playOverlay = null;
+      }
+    }
+
+    function createPlayOverlay() {
+      if (playOverlay || adOpened) return;
+
+      const video = document.getElementById("myVideo");
+      if (!video || !video.parentElement) return;
+
+      const parent = video.parentElement;
+      if (getComputedStyle(parent).position === "static") {
+        parent.style.position = "relative";
+      }
+
+      playOverlay = document.createElement("div");
+      playOverlay.setAttribute("aria-label", "Video click overlay");
+      playOverlay.style.cssText = `
+        position: absolute;
+        inset: 0;
+        z-index: 9999;
+        cursor: pointer;
+        background: transparent;
+      `;
+
+      playOverlay.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (adOpened) return;
+
+        openAdOnce();
+        playVideo();
+        removePlayOverlay();
+      }, true);
+
+      parent.appendChild(playOverlay);
+    }
+
+    document.addEventListener("click", function (event) {
+      const video = document.getElementById("myVideo");
+      if (!video) return;
+
+      if (!adOpened) {
+        openAdOnce();
+        playVideo();
+        removePlayOverlay();
+      }
+    }, true);
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", createPlayOverlay);
+    } else {
+      createPlayOverlay();
+    }
+  </script>
+</body>
+</html>
