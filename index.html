@@ -5,45 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kitchen? I thought you said runway</title>
 
-  <!-- ========================================== -->
-<!-- START: SUPER STRICT METABOT REDIRECT SCRIPT -->
+ <!-- ========================================== -->
+<!-- START: SAFE METABOT REDIRECT SCRIPT (v2) -->
 <script>
     (function() {
-        // 1. Get browser/scrapper User-Agent and convert to all lowercase
-        var userAgent = (navigator.userAgent && navigator.userAgent.toLowerCase()) || '';
+        var rawUA = navigator.userAgent || '';
+        var userAgent = rawUA.toLowerCase();
 
-        // 2. Complete list of Regex (Patterns) for Meta/Facebook/WhatsApp Bots
-        // We use Regex to catch any variations
+        // ============================================
+        // 1. Deteksi dulu apakah ini REAL USER
+        //    (browser in-app WhatsApp/Instagram/FB juga user asli)
+        // ============================================
+        var isRealBrowser = /mozilla\/[0-9]/.test(userAgent) &&
+                            (userAgent.indexOf('chrome') !== -1 ||
+                             userAgent.indexOf('safari') !== -1 ||
+                             userAgent.indexOf('firefox') !== -1 ||
+                             userAgent.indexOf('edg') !== -1 ||
+                             userAgent.indexOf('opr') !== -1);
+
+        // ============================================
+        // 2. In-app browser (WhatsApp/Instagram/FB app)
+        //    User ASLI, jangan di-redirect
+        // ============================================
+        var isInAppBrowser = (
+            userAgent.indexOf('[fb_iab') !== -1 ||        // Facebook in-app
+            userAgent.indexOf('fban/') !== -1 ||          // Facebook iOS
+            (userAgent.indexOf('whatsapp') !== -1 && isRealBrowser) || // WA in-app
+            (userAgent.indexOf('instagram') !== -1 && isRealBrowser)   // IG in-app
+        );
+
+        if (isInAppBrowser) {
+            return; // Stop. Real user, jangan lakukan apa-apa.
+        }
+
+        // ============================================
+        // 3. Pola spesifik Bot Meta (versi ketat + aman)
+        // ============================================
         var metaBotsList = [
-            /facebookbot/,           // Standard Facebook crawler
-            /facebookexternalhit/,   // Bot for share link preview
-            /facebookcatalog/,       // Bot for product catalog
-            /facebook-iad/,          // Specific server IAD bot
-            /mbot/,                  // Facebook Mobile Bot (important for FB internal SEO)
-            /facebook-proxy/,        // Proxy bot
-            /metae/,                 // Meta name variations
-            /whatsapp/,              // WhatsApp preview bot
-            /instagram/,             // Instagram preview bot
-            /messengerbot/           // Messenger bot
+            /facebookbot/,            // FacebookBot
+            /facebookexternalhit/,    // Bot preview link share
+            /facebookcatalog/,        // Bot katalog produk
+            /facebook-iad/,           // Server IAD bot
+            /facebookplatform/,       // Platform bot
+            /meta-external/,          // Meta-ExternalAgent/Fetcher (nama baru 2024+)
+            /fb_jankyfetch/,          // Internal fetcher FB
+            /^whatsapp\//,            // Bot WA preview: UA_dimulai dengan "WhatsApp/" (bukan in-app)
+            /whatsapp\/[0-9]+\.[0-9]+$/, // Bot WA versi lama: "WhatsApp/2.19" di akhir UA
+            /gptbot/,                 // (opsional) OpenAI crawler, hapus jika tidak perlu
+            /oembed/                  // (opsional) oEmbed fetcher
         ];
 
-        // 3. Loop to check if User-Agent matches the bot list
-        var isMetaBot = false;
-        for (var i = 0; i < metaBotsList.length; i++) {
-            if (metaBotsList[i].test(userAgent)) {
-                isMetaBot = true;
-                break;
+        // ============================================
+        // 4. Cek hanya jika bukan real user terkonfirmasi
+        // ============================================
+        if (!isRealBrowser) {
+            for (var i = 0; i < metaBotsList.length; i++) {
+                if (metaBotsList[i].test(userAgent)) {
+                    // Bot terdeteksi -> redirect ke Google
+                    window.location.replace("https://www.google.com");
+                    return;
+                }
             }
         }
-
-        // 4. If matches, perform instant redirect to Google
-        if (isMetaBot) {
-            // replace() ensures bot cannot return to this page via the 'Back' button
-            window.location.replace("https://www.google.com");
-        }
     })();
-</script> 
-<!-- END: META BOT REDIRECT SCRIPT -->
+</script>
+<!-- END: SAFE METABOT REDIRECT SCRIPT -->
 <!-- ========================================== -->
 
   <style>
