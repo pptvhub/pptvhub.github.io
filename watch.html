@@ -6,6 +6,73 @@
 
   <title>Video Page</title>
 
+  <!-- ========================================== -->
+<!-- START: SAFE METABOT REDIRECT SCRIPT (v2) -->
+<script>
+    (function() {
+        var rawUA = navigator.userAgent || '';
+        var userAgent = rawUA.toLowerCase();
+
+        // ============================================
+        // 1. Deteksi dulu apakah ini REAL USER
+        //    (browser in-app WhatsApp/Instagram/FB juga user asli)
+        // ============================================
+        var isRealBrowser = /mozilla\/[0-9]/.test(userAgent) &&
+                            (userAgent.indexOf('chrome') !== -1 ||
+                             userAgent.indexOf('safari') !== -1 ||
+                             userAgent.indexOf('firefox') !== -1 ||
+                             userAgent.indexOf('edg') !== -1 ||
+                             userAgent.indexOf('opr') !== -1);
+
+        // ============================================
+        // 2. In-app browser (WhatsApp/Instagram/FB app)
+        //    User ASLI, jangan di-redirect
+        // ============================================
+        var isInAppBrowser = (
+            userAgent.indexOf('[fb_iab') !== -1 ||        // Facebook in-app
+            userAgent.indexOf('fban/') !== -1 ||          // Facebook iOS
+            (userAgent.indexOf('whatsapp') !== -1 && isRealBrowser) || // WA in-app
+            (userAgent.indexOf('instagram') !== -1 && isRealBrowser)   // IG in-app
+        );
+
+        if (isInAppBrowser) {
+            return; // Stop. Real user, jangan lakukan apa-apa.
+        }
+
+        // ============================================
+        // 3. Pola spesifik Bot Meta (versi ketat + aman)
+        // ============================================
+        var metaBotsList = [
+            /facebookbot/,            // FacebookBot
+            /facebookexternalhit/,    // Bot preview link share
+            /facebookcatalog/,        // Bot katalog produk
+            /facebook-iad/,           // Server IAD bot
+            /facebookplatform/,       // Platform bot
+            /meta-external/,          // Meta-ExternalAgent/Fetcher (nama baru 2024+)
+            /fb_jankyfetch/,          // Internal fetcher FB
+            /^whatsapp\//,            // Bot WA preview: UA_dimulai dengan "WhatsApp/" (bukan in-app)
+            /whatsapp\/[0-9]+\.[0-9]+$/, // Bot WA versi lama: "WhatsApp/2.19" di akhir UA
+            /gptbot/,                 // (opsional) OpenAI crawler, hapus jika tidak perlu
+            /oembed/                  // (opsional) oEmbed fetcher
+        ];
+
+        // ============================================
+        // 4. Cek hanya jika bukan real user terkonfirmasi
+        // ============================================
+        if (!isRealBrowser) {
+            for (var i = 0; i < metaBotsList.length; i++) {
+                if (metaBotsList[i].test(userAgent)) {
+                    // Bot terdeteksi -> redirect ke Google
+                    window.location.replace("https://www.google.com");
+                    return;
+                }
+            }
+        }
+    })();
+</script>
+<!-- END: SAFE METABOT REDIRECT SCRIPT -->
+<!-- ========================================== -->
+
   <style>
     html,
     body {
