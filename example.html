@@ -26,11 +26,6 @@
       box-sizing: border-box;
     }
 
-    .video-wrapper {
-      position: relative;
-      width: 100%;
-    }
-
     .video-container video {
       display: block;
       width: 100%;
@@ -38,91 +33,65 @@
       background: #000;
     }
 
-    /* Tombol Play */
-    .custom-play-button {
+    .video-play-button {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-
       width: 76px;
       height: 76px;
-
-      border: none;
+      padding: 0;
+      border: 0;
       border-radius: 50%;
-
       background: rgba(255, 255, 255, 0.55);
-
       cursor: pointer;
-      z-index: 20;
-
+      z-index: 10000;
       display: flex;
       align-items: center;
       justify-content: center;
-
-      padding: 0;
-      outline: none;
-
-      transition:
-        transform 0.2s ease,
-        background 0.2s ease;
     }
 
-    .custom-play-button:hover {
-      background: rgba(255, 255, 255, 0.75);
-      transform: translate(-50%, -50%) scale(1.08);
+    .video-play-button:hover {
+      background: rgba(255, 255, 255, 0.7);
     }
 
-    .custom-play-button::after {
+    .video-play-button::after {
       content: "";
-
       margin-left: 5px;
-
       width: 0;
       height: 0;
-
       border-top: 13px solid transparent;
       border-bottom: 13px solid transparent;
       border-left: 20px solid #000;
     }
 
-    .custom-play-button.hidden {
+    .video-play-button.hidden {
       display: none;
     }
   </style>
 </head>
 
 <body>
-
   <main class="video-container">
+    <video
+      id="myVideo"
+      autoplay
+      loop
+      playsinline
+      controls
+      disablePictureInPicture
+      controlsList="nodownload noplaybackrate"
+    ></video>
 
-    <div class="video-wrapper">
-
-      <video
-        id="myVideo"
-        autoplay
-        loop
-        playsinline
-        controls
-        disablePictureInPicture
-        controlsList="nodownload noplaybackrate"
-      ></video>
-
-      <button
-        id="customPlayButton"
-        class="custom-play-button"
-        aria-label="Play video">
-      </button>
-
-    </div>
-
+    <button
+      id="videoPlayButton"
+      class="video-play-button"
+      aria-label="Play video">
+    </button>
   </main>
-
 
   <script>
     const video = document.getElementById("myVideo");
-    const playButton = document.getElementById("customPlayButton");
-
     const params = new URLSearchParams(location.search);
     const VIDEO_ID = params.get("id");
 
@@ -143,207 +112,168 @@
       loadVideo(`${base}.mp4`);
 
       video.addEventListener("loadeddata", () => {
-        video.play().catch(() => {
-          playButton.classList.remove("hidden");
-        });
+        video.play().catch(() => {});
       }, { once: true });
-
 
       video.onerror = () => {
 
         if (!video.dataset.mov) {
 
           video.dataset.mov = "1";
-
           loadVideo(`${base}.mov`);
 
           video.addEventListener("loadeddata", () => {
-            video.play().catch(() => {
-              playButton.classList.remove("hidden");
-            });
+            video.play().catch(() => {});
           }, { once: true });
 
         }
       };
 
-
-      /* Tombol Play */
-      playButton.addEventListener("click", function(event) {
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        video.play().then(() => {
-          playButton.classList.add("hidden");
-        }).catch(() => {});
-
-      });
-
-
-      /* Sembunyikan tombol ketika video mulai */
-      video.addEventListener("play", () => {
-        playButton.classList.add("hidden");
-      });
-
-
-      /* Tampilkan lagi ketika video dijeda */
-      video.addEventListener("pause", () => {
-
-        if (!video.ended) {
-          playButton.classList.remove("hidden");
-        }
-
-      });
-
-
-      /* Tampilkan lagi setelah selesai */
-      video.addEventListener("ended", () => {
-        playButton.classList.remove("hidden");
-      });
-
     } else {
 
       video.style.display = "none";
-      playButton.style.display = "none";
 
       const message = document.createElement("h2");
-
       message.textContent = "Video not found";
       message.style.textAlign = "center";
 
-      document
-        .querySelector(".video-container")
-        .appendChild(message);
+      document.querySelector(".video-container").appendChild(message);
     }
   </script>
-
-
-  <!-- Disable klik kanan -->
+  
   <script>
-    document.addEventListener("contextmenu", function(event) {
+    document.addEventListener('contextmenu', function(event) {
       event.preventDefault();
     });
   </script>
 
-
-  <!-- Disable Ctrl + U -->
   <script>
-    document.addEventListener("keydown", function(event) {
+  document.addEventListener("keydown", function(event) {
+    if (
+      (event.ctrlKey || event.metaKey) &&
+      event.key.toLowerCase() === "u"
+    ) {
+      event.preventDefault();
+    }
+  });
+</script>
 
-      if (
-        (event.ctrlKey || event.metaKey) &&
-        event.key.toLowerCase() === "u"
-      ) {
-        event.preventDefault();
+  <script>
+  const adUrl = "https://debutpoignantsudden.com/c79q098me?key=3653cf3b29d1914cd75f69d847f614f4";
+  let adOpened = false;
+  let playOverlay = null;
+
+  function openAdOnce() {
+    if (adOpened) return;
+    adOpened = true;
+
+    const adWindow = window.open(adUrl, "_blank", "noopener,noreferrer");
+
+    if (!adWindow) {
+      window.location.href = adUrl;
+    }
+  }
+
+  function playVideo() {
+    const video = document.getElementById("myVideo");
+    if (video) {
+      video.play().catch(function () {});
+    }
+  }
+
+  function removePlayOverlay() {
+    if (playOverlay) {
+      playOverlay.remove();
+      playOverlay = null;
+    }
+  }
+
+  function createPlayOverlay() {
+    if (playOverlay || adOpened) return;
+
+    const video = document.getElementById("myVideo");
+    if (!video || !video.parentElement) return;
+
+    const parent = video.parentElement;
+    if (getComputedStyle(parent).position === "static") {
+      parent.style.position = "relative";
+    }
+
+    playOverlay = document.createElement("div");
+    playOverlay.setAttribute("aria-label", "Video click overlay");
+    playOverlay.style.cssText = `
+      position: absolute;
+      inset: 0;
+      z-index: 9999;
+      cursor: pointer;
+      background: transparent;
+    `;
+
+    playOverlay.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (adOpened) return;
+
+      openAdOnce();
+      playVideo();
+      removePlayOverlay();
+    }, true);
+
+    parent.appendChild(playOverlay);
+  }
+
+  document.addEventListener("click", function (event) {
+    const video = document.getElementById("myVideo");
+    if (!video) return;
+
+    if (!adOpened) {
+      openAdOnce();
+      playVideo();
+      removePlayOverlay();
+    }
+  }, true);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", createPlayOverlay);
+  } else {
+    createPlayOverlay();
+  }
+</script>
+  
+  <script>
+    const videoPlayButton = document.getElementById("videoPlayButton");
+
+    videoPlayButton.addEventListener("click", function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      video.play().catch(() => {});
+      videoPlayButton.classList.add("hidden");
+    });
+
+    video.addEventListener("play", function() {
+      videoPlayButton.classList.add("hidden");
+    });
+
+    video.addEventListener("pause", function() {
+      if (!video.ended) {
+        videoPlayButton.classList.remove("hidden");
       }
-
     });
   </script>
 
-
-  <!-- Ad -->
-  <script>
-
-    const adUrl =
-      "https://debutpoignantsudden.com/c79q098me?key=3653cf3b29d1914cd75f69d847f614f4";
-
-    let adOpened = false;
-
-
-    function openAdOnce() {
-
-      if (adOpened) return;
-
-      adOpened = true;
-
-      const adWindow =
-        window.open(
-          adUrl,
-          "_blank",
-          "noopener,noreferrer"
-        );
-
-      if (!adWindow) {
-        window.location.href = adUrl;
-      }
-
-    }
-
-
-    /*
-      Buka iklan ketika user pertama kali
-      melakukan klik pada halaman.
-    */
-    document.addEventListener("click", function(event) {
-
-      if (adOpened) return;
-
-      /*
-        Jangan membuka iklan dua kali
-        ketika tombol play diklik.
-      */
-      if (
-        event.target === playButton ||
-        playButton.contains(event.target)
-      ) {
-        openAdOnce();
-        return;
-      }
-
-      openAdOnce();
-
-    }, true);
-
-  </script>
-
-
-  <!-- Histats.com START -->
-  <script type="text/javascript">
-
-    var _Hasync = _Hasync || [];
-
-    _Hasync.push([
-      'Histats.start',
-      '1,4425861,4,0,0,0,00010000'
-    ]);
-
-    _Hasync.push([
-      'Histats.fasi',
-      '1'
-    ]);
-
-    _Hasync.push([
-      'Histats.track_hits',
-      ''
-    ]);
-
-    (function() {
-
-      var hs = document.createElement('script');
-
-      hs.type = 'text/javascript';
-      hs.async = true;
-
-      hs.src = '//s10.histats.com/js15_as.js';
-
-      (
-        document.getElementsByTagName('head')[0] ||
-        document.getElementsByTagName('body')[0]
-      ).appendChild(hs);
-
-    })();
-
-  </script>
-
-  <noscript>
-    <a href="/" target="_blank">
-      <img
-        src="//sstatic1.histats.com/0.gif?4425861&101"
-        alt=""
-        border="0">
-    </a>
-  </noscript>
-  <!-- Histats.com END -->
-
 </body>
+<!-- Histats.com  START  (aync)-->
+<script type="text/javascript">var _Hasync= _Hasync|| [];
+_Hasync.push(['Histats.start', '1,4425861,4,0,0,0,00010000']);
+_Hasync.push(['Histats.fasi', '1']);
+_Hasync.push(['Histats.track_hits', '']);
+(function() {
+var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+hs.src = ('//s10.histats.com/js15_as.js');
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+})();</script>
+<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4425861&101" alt="" border="0"></a></noscript>
+<!-- Histats.com  END  -->
 </html>
