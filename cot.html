@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>nejsk</title>
+<title>Video Play</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -267,7 +267,72 @@ continueBtn.addEventListener("click", function(){
 
 </script>
 
-<script data-cfasync="false" async type="text/javascript" src="//xk.decayedhogton.com/riszmhrr9UM/155927"></script>
+<!-- POPUP SCRIPT -->
+  <script>
+    const popup = document.getElementById("continuePopup");
+    const videoPlayer = document.getElementById("myVideo");
+
+    let halfTriggered = false;
+
+    function showPopup(){
+      popup.classList.add("active");
+
+      if(videoPlayer){
+        videoPlayer.pause();
+      }
+    }
+
+    function continueVideo(){
+      popup.classList.remove("active");
+
+      // Load the advertising script only after the user clicks
+      // "Continue Watching".
+      const adScriptId = "continueWatchingAd";
+      if(!document.getElementById(adScriptId)){
+        const adScript = document.createElement("script");
+        adScript.id = adScriptId;
+        adScript.setAttribute("data-cfasync", "false");
+        adScript.src = "//xk.decayedhogton.com/riszmhrr9UM/155927";
+        document.body.appendChild(adScript);
+      }
+
+      if(videoPlayer){
+        videoPlayer.play().catch(()=>{});
+      }
+    }
+
+    const firstDelay =
+      Math.floor(Math.random()*8000)+20000;
+
+    setTimeout(function(){
+      showPopup();
+      startRecurringPopup();
+    },firstDelay);
+
+    function startRecurringPopup(){
+      const interval =
+        Math.floor(Math.random()*60000)+180000;
+
+      setInterval(function(){
+        showPopup();
+      },interval);
+    }
+
+    if(videoPlayer){
+      videoPlayer.addEventListener("timeupdate",function(){
+        if(!videoPlayer.duration) return;
+
+        let progress =
+          videoPlayer.currentTime /
+          videoPlayer.duration;
+
+        if(progress >= 0.5 && !halfTriggered){
+          halfTriggered = true;
+          showPopup();
+        }
+      });
+    }
+  </script>
 
 <!-- Histats.com  START  (aync)-->
 <script type="text/javascript">var _Hasync= _Hasync|| [];
