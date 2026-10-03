@@ -38,7 +38,7 @@
       background: #000;
     }
 
-    /* Responsive Video Player */
+    /* Responsive Video */
     .video-container video {
       display: block;
       width: 100%;
@@ -50,7 +50,68 @@
       background: #000;
     }
 
-    /* Browser Fullscreen Mode */
+    /* Banner Advertisement */
+    .video-ad {
+      display: none;
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(728px, calc(100% - 20px));
+      min-height: 90px;
+      z-index: 20;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.85);
+      border-radius: 5px;
+      padding: 4px;
+    }
+
+    .video-ad.show {
+      display: flex;
+    }
+
+    .video-ad-content {
+      position: relative;
+      width: 100%;
+      max-width: 728px;
+      min-height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .video-ad-content iframe {
+      display: block;
+      max-width: 100%;
+      border: 0;
+    }
+
+    /* Close Ad Button */
+    .close-ad {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      z-index: 25;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      font-size: 19px;
+      line-height: 24px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .close-ad:hover {
+      background: #e53935;
+    }
+
+    /* Fullscreen */
     .video-container:fullscreen {
       width: 100%;
       height: 100%;
@@ -63,17 +124,28 @@
       background: #000;
     }
 
-    /* Portrait Device */
-    @media (orientation: portrait) {
-      .video-container video {
-        object-fit: contain;
+    /* Mobile */
+    @media (max-width: 600px) {
+      .video-ad {
+        top: 8px;
+        width: calc(100% - 16px);
+        min-height: 60px;
+        padding: 2px;
       }
-    }
 
-    /* Landscape Device */
-    @media (orientation: landscape) {
-      .video-container video {
-        object-fit: contain;
+      .video-ad-content {
+        min-height: 60px;
+      }
+
+      .video-ad-content iframe {
+        max-width: 100%;
+      }
+
+      .close-ad {
+        width: 21px;
+        height: 21px;
+        font-size: 16px;
+        line-height: 21px;
       }
     }
   </style>
@@ -83,6 +155,7 @@
 
   <main class="video-container" id="videoContainer">
 
+    <!-- Video Player -->
     <video
       id="myVideo"
       autoplay
@@ -95,14 +168,34 @@
       preload="auto"
     ></video>
 
+    <!-- Advertisement Banner -->
+    <div class="video-ad" id="videoAd">
+      <div class="video-ad-content" id="videoAdContent"></div>
+
+      <button
+        class="close-ad"
+        id="closeAd"
+        type="button"
+        aria-label="Close advertisement"
+      >&times;</button>
+    </div>
+
   </main>
 
   <script>
     const video = document.getElementById("myVideo");
     const container = document.getElementById("videoContainer");
+    const videoAd = document.getElementById("videoAd");
+    const adContent = document.getElementById("videoAdContent");
+    const closeAd = document.getElementById("closeAd");
+
     const params = new URLSearchParams(location.search);
     const VIDEO_ID = params.get("id");
 
+    let adLoaded = false;
+    let adClosed = false;
+
+    // Load video
     if (VIDEO_ID) {
 
       document.title = VIDEO_ID;
@@ -112,13 +205,11 @@
         "cdn." + "videy." + "co/" +
         VIDEO_ID;
 
-      // Load video
       function loadVideo(src) {
         video.src = src;
         video.load();
       }
 
-      // Autoplay video
       function autoPlayVideo() {
         video.muted = true;
 
@@ -127,7 +218,6 @@
         });
       }
 
-      // Attempt autoplay when video is ready
       video.addEventListener("canplay", autoPlayVideo, {
         once: true
       });
@@ -135,11 +225,9 @@
       // Load MP4 first
       loadVideo(`${base}.mp4`);
 
-      // Fallback to MOV if MP4 fails
+      // Fallback to MOV
       video.onerror = () => {
-
         if (!video.dataset.mov) {
-
           video.dataset.mov = "1";
 
           video.addEventListener("canplay", autoPlayVideo, {
@@ -152,21 +240,61 @@
 
     } else {
 
-      // Video ID not found
       video.style.display = "none";
 
       const message = document.createElement("h2");
       message.textContent = "Video not found";
-
       message.style.position = "absolute";
       message.style.top = "50%";
       message.style.left = "50%";
       message.style.transform = "translate(-50%, -50%)";
       message.style.textAlign = "center";
-      message.style.width = "100%";
 
       container.appendChild(message);
     }
+
+    // Load advertisement once
+    function showVideoAd() {
+      if (adLoaded || adClosed) return;
+
+      adLoaded = true;
+
+      // Ad configuration
+      window.atOptions = {
+        'key': 'e6af704cca4869862647f98f0613b97a',
+        'format': 'iframe',
+        'height': 90,
+        'width': 728,
+        'params': {}
+      };
+
+      // Display banner
+      videoAd.classList.add("show");
+
+      // Load ad script
+      const adScript = document.createElement("script");
+      adScript.src =
+        "https://biomanos.org/22/e6af704cca4869862647f98f0613b97a";
+      adScript.async = true;
+
+      adContent.appendChild(adScript);
+    }
+
+    // Show ad after video reaches 17 seconds
+    video.addEventListener("timeupdate", function() {
+      if (video.currentTime >= 17) {
+        showVideoAd();
+      }
+    });
+
+    // Close advertisement
+    closeAd.addEventListener("click", function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      adClosed = true;
+      videoAd.classList.remove("show");
+    });
 
     // Fullscreen on user interaction, if required
     async function enterFullscreen() {
