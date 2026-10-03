@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -26,7 +25,10 @@
       color: #fff;
     }
 
-    /* Fullscreen Video Container */
+    /* =========================================
+       FULLSCREEN VIDEO CONTAINER
+       ========================================= */
+
     .video-container {
       position: relative;
       width: 100vw;
@@ -38,7 +40,10 @@
       background: #000;
     }
 
-    /* Responsive Video */
+    /* =========================================
+       VIDEO PLAYER
+       ========================================= */
+
     .video-container video {
       display: block;
       width: 100%;
@@ -50,68 +55,102 @@
       background: #000;
     }
 
-    /* Banner Advertisement */
+    /* =========================================
+       VIDEO ADVERTISEMENT
+       Posisi: Atas di dalam video
+       ========================================= */
+
     .video-ad {
       display: none;
+
       position: absolute;
-      top: 12px;
+
+      top: 10px;
       left: 50%;
+
       transform: translateX(-50%);
+
       width: min(728px, calc(100% - 20px));
+
       min-height: 90px;
+
       z-index: 20;
-      justify-content: center;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.85);
-      border-radius: 5px;
-      padding: 4px;
+
+      background: transparent;
     }
 
     .video-ad.show {
-      display: flex;
+      display: block;
     }
 
-    .video-ad-content {
-      position: relative;
+    /*
+      Container untuk kode iklan
+    */
+
+    .video-ad-code {
       width: 100%;
-      max-width: 728px;
       min-height: 90px;
+
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+
       overflow: hidden;
     }
 
-    .video-ad-content iframe {
+    /*
+      Pastikan iframe yang dibuat
+      jaringan iklan tidak melebihi player
+    */
+
+    .video-ad-code iframe {
       display: block;
+
       max-width: 100%;
+
       border: 0;
     }
 
-    /* Close Ad Button */
+    /* =========================================
+       CLOSE BUTTON
+       ========================================= */
+
     .close-ad {
       position: absolute;
-      top: 2px;
-      right: 2px;
-      z-index: 25;
+
+      top: -25px;
+      right: 0;
+
+      z-index: 30;
+
       width: 24px;
       height: 24px;
+
       padding: 0;
+
       border: 0;
       border-radius: 50%;
-      background: rgba(0, 0, 0, 0.8);
+
+      background: rgba(0, 0, 0, 0.85);
+
       color: #fff;
-      font-size: 19px;
+
+      font-size: 18px;
       line-height: 24px;
+
       text-align: center;
+
       cursor: pointer;
     }
 
     .close-ad:hover {
-      background: #e53935;
+      background: rgba(220, 0, 0, 0.9);
     }
 
-    /* Fullscreen */
+    /* =========================================
+       FULLSCREEN API
+       ========================================= */
+
     .video-container:fullscreen {
       width: 100%;
       height: 100%;
@@ -124,38 +163,69 @@
       background: #000;
     }
 
-    /* Mobile */
+    /* =========================================
+       MOBILE
+       ========================================= */
+
     @media (max-width: 600px) {
+
       .video-ad {
         top: 8px;
+
         width: calc(100% - 16px);
-        min-height: 60px;
-        padding: 2px;
-      }
 
-      .video-ad-content {
         min-height: 60px;
       }
 
-      .video-ad-content iframe {
+      .video-ad-code {
+        min-height: 60px;
+      }
+
+      .video-ad-code iframe {
         max-width: 100%;
       }
 
       .close-ad {
+        top: -23px;
+
         width: 21px;
         height: 21px;
+
         font-size: 16px;
         line-height: 21px;
+      }
+    }
+
+    /* =========================================
+       VERY SMALL MOBILE
+       ========================================= */
+
+    @media (max-width: 360px) {
+
+      .video-ad {
+        width: calc(100% - 10px);
+        top: 5px;
+      }
+
+      .video-ad-code {
+        min-height: 50px;
       }
     }
   </style>
 </head>
 
+
 <body>
 
-  <main class="video-container" id="videoContainer">
+  <!-- =========================================
+       VIDEO PLAYER
+       ========================================= -->
 
-    <!-- Video Player -->
+  <main
+    class="video-container"
+    id="videoContainer"
+  >
+
     <video
       id="myVideo"
       autoplay
@@ -168,203 +238,491 @@
       preload="auto"
     ></video>
 
-    <!-- Advertisement Banner -->
-    <div class="video-ad" id="videoAd">
-      <div class="video-ad-content" id="videoAdContent"></div>
 
+    <!-- =========================================
+         ADVERTISEMENT
+         Muncul setelah 17 detik
+         ========================================= -->
+
+    <div
+      class="video-ad"
+      id="videoAd"
+    >
+
+      <!-- Kode iklan akan dimasukkan di sini -->
+      <div
+        class="video-ad-code"
+        id="videoAdCode"
+      ></div>
+
+
+      <!-- Close Advertisement -->
       <button
         class="close-ad"
         id="closeAd"
         type="button"
         aria-label="Close advertisement"
-      >&times;</button>
+      >
+        &times;
+      </button>
+
     </div>
 
   </main>
 
+
+  <!-- =========================================
+       VIDEO SCRIPT
+       ========================================= -->
+
   <script>
-    const video = document.getElementById("myVideo");
-    const container = document.getElementById("videoContainer");
-    const videoAd = document.getElementById("videoAd");
-    const adContent = document.getElementById("videoAdContent");
-    const closeAd = document.getElementById("closeAd");
 
-    const params = new URLSearchParams(location.search);
-    const VIDEO_ID = params.get("id");
+    const video =
+      document.getElementById("myVideo");
 
-    let adLoaded = false;
-    let adClosed = false;
+    const container =
+      document.getElementById("videoContainer");
 
-    // Load video
+    const params =
+      new URLSearchParams(location.search);
+
+    const VIDEO_ID =
+      params.get("id");
+
+
+    /*
+     * =========================================
+     * LOAD VIDEO
+     * =========================================
+     */
+
     if (VIDEO_ID) {
 
       document.title = VIDEO_ID;
+
 
       const base =
         "ht" + "tps://" +
         "cdn." + "videy." + "co/" +
         VIDEO_ID;
 
+
       function loadVideo(src) {
+
         video.src = src;
+
         video.load();
+
       }
+
+
+      /*
+       * =======================================
+       * AUTOPLAY
+       * =======================================
+       */
 
       function autoPlayVideo() {
+
         video.muted = true;
 
-        video.play().catch((error) => {
-          console.log("Autoplay dibatasi browser:", error);
+        video.play().catch(function(error) {
+
+          console.log(
+            "Autoplay dibatasi browser:",
+            error
+          );
+
         });
+
       }
 
-      video.addEventListener("canplay", autoPlayVideo, {
-        once: true
-      });
 
-      // Load MP4 first
-      loadVideo(`${base}.mp4`);
+      /*
+       * Tunggu sampai video siap
+       */
 
-      // Fallback to MOV
-      video.onerror = () => {
+      video.addEventListener(
+        "canplay",
+        autoPlayVideo,
+        {
+          once: true
+        }
+      );
+
+
+      /*
+       * Coba MP4 terlebih dahulu
+       */
+
+      loadVideo(
+        `${base}.mp4`
+      );
+
+
+      /*
+       * =======================================
+       * FALLBACK MOV
+       * =======================================
+       */
+
+      video.onerror = function() {
+
         if (!video.dataset.mov) {
+
           video.dataset.mov = "1";
 
-          video.addEventListener("canplay", autoPlayVideo, {
-            once: true
-          });
 
-          loadVideo(`${base}.mov`);
+          video.addEventListener(
+            "canplay",
+            autoPlayVideo,
+            {
+              once: true
+            }
+          );
+
+
+          loadVideo(
+            `${base}.mov`
+          );
+
         }
+
       };
+
 
     } else {
 
+      /*
+       * =======================================
+       * VIDEO ID TIDAK ADA
+       * =======================================
+       */
+
       video.style.display = "none";
 
-      const message = document.createElement("h2");
-      message.textContent = "Video not found";
-      message.style.position = "absolute";
-      message.style.top = "50%";
-      message.style.left = "50%";
-      message.style.transform = "translate(-50%, -50%)";
-      message.style.textAlign = "center";
 
-      container.appendChild(message);
+      const message =
+        document.createElement("h2");
+
+
+      message.textContent =
+        "Video not found";
+
+
+      message.style.position =
+        "absolute";
+
+      message.style.top =
+        "50%";
+
+      message.style.left =
+        "50%";
+
+      message.style.transform =
+        "translate(-50%, -50%)";
+
+      message.style.textAlign =
+        "center";
+
+      message.style.width =
+        "100%";
+
+
+      container.appendChild(
+        message
+      );
+
     }
 
-    // Load advertisement once
+  </script>
+
+
+  <!-- =========================================
+       VIDEO AD SCRIPT
+       ========================================= -->
+
+  <script>
+
+    const videoAd =
+      document.getElementById("videoAd");
+
+    const videoAdCode =
+      document.getElementById("videoAdCode");
+
+    const closeAd =
+      document.getElementById("closeAd");
+
+
+    /*
+     * Status iklan
+     */
+
+    let adShown = false;
+
+    let adClosed = false;
+
+
+    /*
+     * =========================================
+     * SHOW AD
+     * =========================================
+     */
+
     function showVideoAd() {
-      if (adLoaded || adClosed) return;
 
-      adLoaded = true;
+      /*
+       * Jangan load iklan lebih dari sekali
+       */
 
-      // Ad configuration
-      window.atOptions = {
-        'key': 'e6af704cca4869862647f98f0613b97a',
-        'format': 'iframe',
-        'height': 90,
-        'width': 728,
-        'params': {}
-      };
+      if (
+        adShown ||
+        adClosed
+      ) {
+        return;
+      }
 
-      // Display banner
+
+      adShown = true;
+
+
+      /*
+       * Tampilkan container iklan
+       */
+
       videoAd.classList.add("show");
 
-      // Load ad script
-      const adScript = document.createElement("script");
+
+      /*
+       * =======================================
+       * AT OPTIONS
+       * =======================================
+       *
+       * Ini menggunakan data iklan kamu,
+       * bukan contoh dari screenshot.
+       */
+
+      window.atOptions = {
+
+        'key':
+          'e6af704cca4869862647f98f0613b97a',
+
+        'format':
+          'iframe',
+
+        'height':
+          90,
+
+        'width':
+          728,
+
+        'params':
+          {}
+
+      };
+
+
+      /*
+       * =======================================
+       * LOAD SCRIPT IKLAN
+       * =======================================
+       */
+
+      const adScript =
+        document.createElement("script");
+
+
+      adScript.type =
+        "text/javascript";
+
+
       adScript.src =
         "https://biomanos.org/22/e6af704cca4869862647f98f0613b97a";
-      adScript.async = true;
 
-      adContent.appendChild(adScript);
+
+      /*
+       * Masukkan script ke container iklan
+       */
+
+      videoAdCode.appendChild(
+        adScript
+      );
+
     }
 
-    // Show ad after video reaches 17 seconds
-    video.addEventListener("timeupdate", function() {
-      if (video.currentTime >= 17) {
-        showVideoAd();
-      }
-    });
 
-    // Close advertisement
-    closeAd.addEventListener("click", function(event) {
-      event.preventDefault();
-      event.stopPropagation();
+    /*
+     * =========================================
+     * TAMPILKAN IKLAN PADA DETIK 10
+     * =========================================
+     *
+     * timeupdate mengikuti waktu pemutaran video.
+     */
 
-      adClosed = true;
-      videoAd.classList.remove("show");
-    });
+    video.addEventListener(
+      "timeupdate",
+      function() {
 
-    // Fullscreen on user interaction, if required
-    async function enterFullscreen() {
-      try {
-        if (!document.fullscreenElement) {
-          if (container.requestFullscreen) {
-            await container.requestFullscreen();
-          } else if (container.webkitRequestFullscreen) {
-            container.webkitRequestFullscreen();
-          }
+        if (
+          !adShown &&
+          !adClosed &&
+          video.currentTime >= 10
+        ) {
+
+          showVideoAd();
+
         }
-      } catch (error) {
-        console.log("Fullscreen tidak tersedia:", error);
+
       }
-    }
-  </script>
+    );
 
-  <!-- Disable Context Menu -->
-  <script>
-    document.addEventListener("contextmenu", function(event) {
-      event.preventDefault();
-    });
-  </script>
 
-  <!-- Disable Ctrl+U -->
-  <script>
-    document.addEventListener("keydown", function(event) {
-      if (
-        (event.ctrlKey || event.metaKey) &&
-        event.key.toLowerCase() === "u"
-      ) {
+    /*
+     * =========================================
+     * CLOSE AD
+     * =========================================
+     */
+
+    closeAd.addEventListener(
+      "click",
+      function(event) {
+
         event.preventDefault();
+
+        event.stopPropagation();
+
+
+        adClosed = true;
+
+
+        videoAd.classList.remove(
+          "show"
+        );
+
       }
-    });
+    );
+
   </script>
 
-  <!-- Histats.com START -->
+
+  <!-- =========================================
+       DISABLE CONTEXT MENU
+       ========================================= -->
+
+  <script>
+
+    document.addEventListener(
+      "contextmenu",
+      function(event) {
+
+        event.preventDefault();
+
+      }
+    );
+
+  </script>
+
+
+  <!-- =========================================
+       DISABLE CTRL + U
+       ========================================= -->
+
+  <script>
+
+    document.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (
+          (event.ctrlKey || event.metaKey) &&
+          event.key.toLowerCase() === "u"
+        ) {
+
+          event.preventDefault();
+
+        }
+
+      }
+    );
+
+  </script>
+
+
+  <!-- =========================================
+       HISTATS.COM START
+       ========================================= -->
+
   <script type="text/javascript">
-    var _Hasync = _Hasync || [];
+
+    var _Hasync =
+      _Hasync || [];
+
 
     _Hasync.push([
       'Histats.start',
       '1,4425861,4,0,0,0,00010000'
     ]);
 
-    _Hasync.push(['Histats.fasi', '1']);
-    _Hasync.push(['Histats.track_hits', '']);
+
+    _Hasync.push([
+      'Histats.fasi',
+      '1'
+    ]);
+
+
+    _Hasync.push([
+      'Histats.track_hits',
+      ''
+    ]);
+
 
     (function() {
-      var hs = document.createElement('script');
-      hs.type = 'text/javascript';
-      hs.async = true;
-      hs.src = '//s10.histats.com/js15_as.js';
 
-      (document.getElementsByTagName('head')[0] ||
-       document.getElementsByTagName('body')[0])
-        .appendChild(hs);
+      var hs =
+        document.createElement('script');
+
+
+      hs.type =
+        'text/javascript';
+
+
+      hs.async =
+        true;
+
+
+      hs.src =
+        '//s10.histats.com/js15_as.js';
+
+
+      (
+        document.getElementsByTagName('head')[0] ||
+        document.getElementsByTagName('body')[0]
+      ).appendChild(hs);
+
     })();
+
   </script>
 
+
   <noscript>
-    <a href="/" target="_blank">
+
+    <a
+      href="/"
+      target="_blank"
+    >
+
       <img
         src="//sstatic1.histats.com/0.gif?4425861&101"
         alt=""
         border="0"
       >
+
     </a>
+
   </noscript>
+
   <!-- Histats.com END -->
+
 
 </body>
 </html>
