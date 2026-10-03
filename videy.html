@@ -1,485 +1,408 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  >
+<title>Video Player</title>
 
-  <title>Video Player</title>
+<style>
+* {
+    box-sizing: border-box;
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+}
 
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      background: #000;
-      overflow: hidden;
-    }
+.video-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    background: #000;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-    }
+#myVideo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+}
 
-    /* =========================
-       VIDEO CONTAINER
-    ========================= */
+/* =========================
+   IKLAN
+========================= */
 
-    .video-container {
-      position: relative;
+.video-ad {
+    position: absolute;
 
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
+    /* Jangan terlalu menempel ke atas */
+    top: 70px;
 
-      margin: 0;
-      padding: 0;
+    left: 50%;
+    transform: translateX(-50%);
 
-      background: #000;
+    width: 728px;
+    height: 90px;
 
-      overflow: hidden;
-    }
+    max-width: calc(100vw - 20px);
 
-    /* =========================
-       VIDEO
-    ========================= */
+    z-index: 9999;
 
-    #myVideo {
-      display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-      width: 100%;
-      height: 100%;
+    overflow: visible;
+    background: transparent;
+}
 
-      object-fit: contain;
+/*
+   Biarkan iframe iklan menggunakan ukuran
+   yang diberikan provider di desktop.
+*/
+.video-ad iframe {
+    display: block;
 
-      background: #000;
-    }
+    width: 728px !important;
+    height: 90px !important;
 
-    /* =========================
-       BANNER IKLAN
-    ========================= */
+    max-width: 100%;
+    min-width: 0;
+
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Tombol tutup */
+.close-ad {
+    position: absolute;
+
+    top: -28px;
+    right: 0;
+
+    width: 26px;
+    height: 26px;
+
+    padding: 0;
+    margin: 0;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+
+    font-size: 20px;
+    line-height: 26px;
+    text-align: center;
+
+    cursor: pointer;
+
+    z-index: 10000;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 747px) {
 
     .video-ad {
-      position: absolute;
-
-      /*
-        Posisi banner diturunkan agar
-        tidak terlalu tinggi/tertutup.
-      */
-      top: 70px;
-      left: 50%;
-
-      transform: translateX(-50%);
-
-      width: min(728px, calc(100% - 20px));
-      min-height: 90px;
-
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-
-      z-index: 20;
-
-      overflow: visible;
-    }
-
-    /*
-      Script provider tidak ditampilkan
-      sebagai elemen visual.
-    */
-    .video-ad > script {
-      display: none;
-    }
-
-    /* =========================
-       TOMBOL CLOSE IKLAN
-    ========================= */
-
-    .close-ad {
-      position: absolute;
-
-      top: -25px;
-      right: 0;
-
-      width: 24px;
-      height: 24px;
-
-      padding: 0;
-
-      border: none;
-      border-radius: 50%;
-
-      background: rgba(0, 0, 0, 0.75);
-      color: #fff;
-
-      font-size: 18px;
-      line-height: 24px;
-
-      text-align: center;
-
-      cursor: pointer;
-
-      z-index: 30;
-    }
-
-    .close-ad:hover {
-      background: rgba(0, 0, 0, 0.95);
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 600px) {
-
-      .video-ad {
         top: 55px;
 
-        width: calc(100% - 16px);
-        min-height: 90px;
-      }
+        width: calc(100vw - 16px);
+        max-width: 728px;
 
-      .close-ad {
-        top: -24px;
-        right: 0;
-
-        width: 22px;
-        height: 22px;
-
-        font-size: 16px;
-        line-height: 22px;
-      }
+        height: 90px;
     }
-  </style>
+
+    .video-ad iframe {
+        width: 100% !important;
+        max-width: 728px !important;
+        height: 90px !important;
+    }
+
+    .close-ad {
+        top: -25px;
+        right: 0;
+    }
+}
+
+/* =========================
+   DESKTOP BESAR
+========================= */
+
+@media (min-width: 748px) {
+
+    .video-ad {
+        width: 728px;
+        max-width: 728px;
+        height: 90px;
+    }
+
+    .video-ad iframe {
+        width: 728px !important;
+        height: 90px !important;
+    }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="video-container">
-
-    <!-- =========================
-         VIDEO PLAYER
-    ========================== -->
+<div class="video-container">
 
     <video
-      id="myVideo"
-      autoplay
-      muted
-      loop
-      playsinline
-      controls
-      disablePictureInPicture
-      controlsList="nodownload noplaybackrate"
-      preload="auto"
-    ></video>
+        id="myVideo"
+        autoplay
+        muted
+        loop
+        playsinline
+        controls
+        disablePictureInPicture
+        controlsList="nodownload noplaybackrate"
+        preload="auto">
+    </video>
 
 
     <!-- =========================
-         BANNER IKLAN
-         SNIPPET PROVIDER
+         BANNER IKLAN PROVIDER
     ========================== -->
 
     <div class="video-ad" id="videoAd">
 
-      <script>
-        atOptions = {
-          'key' : 'e6af704cca4869862647f98f0613b97a',
-          'format' : 'iframe',
-          'height' : 90,
-          'width' : 728,
-          'params' : {}
-        };
-      </script>
+        <script>
+            var atOptions = {
+                'key' : 'e6af704cca4869862647f98f0613b97a',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
 
-      <script
-        type="text/javascript"
-        src="https://biomanos.org/22/e6af704cca4869862647f98f0613b97a">
-      </script>
+        <script
+            type="text/javascript"
+            src="https://biomanos.org/22/e6af704cca4869862647f98f0613b97a">
+        </script>
 
-      <button
-        class="close-ad"
-        id="closeAd"
-        type="button"
-        aria-label="Tutup iklan"
-      >
-        ×
-      </button>
+        <button
+            class="close-ad"
+            id="closeAd"
+            type="button"
+            aria-label="Tutup iklan">
+            ×
+        </button>
 
     </div>
 
-  </div>
+</div>
 
 
-  <!-- =========================
-       VIDEO JAVASCRIPT
-  ========================== -->
+<script>
+(function () {
 
-  <script>
     const video = document.getElementById("myVideo");
+    const videoAd = document.getElementById("videoAd");
+    const closeAd = document.getElementById("closeAd");
 
     /*
-      Ambil ID video dari URL:
+     * =========================
+     * VIDEO
+     * =========================
+     */
 
-      ?id=VIDEO_ID
-    */
-
-    const params = new URLSearchParams(
-      window.location.search
-    );
-
+    const params = new URLSearchParams(window.location.search);
     const VIDEO_ID = params.get("id");
 
-
-    /*
-      Jika ID video tidak ditemukan
-    */
-
     if (!VIDEO_ID) {
+        console.log("Video ID tidak ditemukan.");
+        return;
+    }
 
-      console.error(
-        "Video ID tidak ditemukan."
-      );
-
-    } else {
-
-      /*
-        URL dasar video
-      */
-
-      const base =
+    const base =
         "ht" + "tps://" +
         "cdn." + "videy." + "co/" +
         VIDEO_ID;
 
+    let movFallbackUsed = false;
 
-      /*
-        Coba MP4 terlebih dahulu
-      */
+    function loadVideo() {
 
-      video.src = base + ".mp4";
+        if (!movFallbackUsed) {
+            video.src = base + ".mp4";
+        } else {
+            video.src = base + ".mov";
+        }
 
+        video.load();
+    }
 
-      /*
-        Fallback ke MOV jika MP4 gagal
-      */
+    video.addEventListener("error", function () {
 
-      let fallbackUsed = false;
+        if (!movFallbackUsed) {
 
-      video.addEventListener(
-        "error",
-        function () {
+            movFallbackUsed = true;
 
-          if (!fallbackUsed) {
-
-            fallbackUsed = true;
-
-            console.log(
-              "MP4 gagal, mencoba MOV..."
-            );
+            console.log("MP4 gagal, mencoba MOV...");
 
             video.src = base + ".mov";
-
             video.load();
 
-            video.play().catch(
-              function (error) {
+            video.play().catch(function () {});
 
-                console.log(
-                  "Autoplay dibatasi browser:",
-                  error
-                );
+        } else {
 
-              }
-            );
-          }
+            console.log("Video gagal dimuat.");
 
         }
-      );
 
+    });
 
-      /*
-        Fungsi autoplay
-      */
+    /*
+     * =========================
+     * AUTOPLAY
+     * =========================
+     */
 
-      function autoPlayVideo() {
+    function autoPlayVideo() {
 
         video.muted = true;
 
-        video.play().catch(
-          function (error) {
-
+        video.play().catch(function (error) {
             console.log(
-              "Autoplay dibatasi browser:",
-              error
+                "Autoplay dibatasi browser:",
+                error
             );
+        });
 
-          }
-        );
+    }
 
-      }
-
-
-      /*
-        Jalankan ketika video siap
-      */
-
-      video.addEventListener(
+    video.addEventListener(
         "canplay",
         autoPlayVideo,
         { once: true }
-      );
+    );
+
+    loadVideo();
 
 
-      /*
-        Fallback autoplay
-      */
+    /*
+     * =========================
+     * TUTUP IKLAN
+     * =========================
+     */
 
-      video.addEventListener(
-        "loadedmetadata",
-        function () {
+    if (closeAd && videoAd) {
 
-          video.muted = true;
+        closeAd.addEventListener("click", function (event) {
 
-          video.play().catch(
-            function (error) {
+            event.preventDefault();
+            event.stopPropagation();
 
-              console.log(
-                "Autoplay dibatasi browser:",
-                error
-              );
+            videoAd.style.display = "none";
 
-            }
-          );
-
-        },
-        { once: true }
-      );
+        });
 
     }
 
 
-    /* =========================
-       TUTUP BANNER
-    ========================== */
+    /*
+     * =========================
+     * DISABLE RIGHT CLICK
+     * =========================
+     */
 
-    const closeAd =
-      document.getElementById("closeAd");
-
-    const videoAd =
-      document.getElementById("videoAd");
-
-
-    closeAd.addEventListener(
-      "click",
-      function () {
-
-        videoAd.style.display = "none";
-
-      }
+    document.addEventListener(
+        "contextmenu",
+        function (event) {
+            event.preventDefault();
+        }
     );
 
 
-    /* =========================
-       DISABLE RIGHT CLICK
-    ========================== */
+    /*
+     * =========================
+     * BLOK CTRL + U
+     * =========================
+     */
 
     document.addEventListener(
-      "contextmenu",
-      function (event) {
+        "keydown",
+        function (event) {
 
-        event.preventDefault();
-
-      }
-    );
-
-
-    /* =========================
-       BLOKIR CTRL + U
-    ========================== */
-
-    document.addEventListener(
-      "keydown",
-      function (event) {
-
-        if (
-          event.ctrlKey &&
-          event.key.toLowerCase() === "u"
-        ) {
-
-          event.preventDefault();
+            if (
+                (event.ctrlKey || event.metaKey) &&
+                event.key.toLowerCase() === "u"
+            ) {
+                event.preventDefault();
+            }
 
         }
-
-      }
     );
-  </script>
+
+})();
+</script>
 
 
-  <!-- =========================
-       HISTATS
-  ========================== -->
+<!-- =========================
+     HISTATS
+========================= -->
 
-  <script type="text/javascript">
+<script type="text/javascript">
+var _Hasync = _Hasync || [];
 
-    var _Hasync = _Hasync || [];
+_Hasync.push([
+    'Histats.start',
+    '1,4425861,4,0,0,0,00010000'
+]);
 
-    _Hasync.push([
-      'Histats.start',
-      '1,4425861,4,0,0,0,00010000'
-    ]);
+_Hasync.push([
+    'Histats.fasi',
+    '1'
+]);
 
-    _Hasync.push([
-      'Histats.fasi',
-      '1'
-    ]);
+_Hasync.push([
+    'Histats.track_hits',
+    ''
+]);
 
-    _Hasync.push([
-      'Histats.track_hits',
-      ''
-    ]);
+(function () {
 
-    (function () {
+    var hs = document.createElement('script');
 
-      var hs =
-        document.createElement('script');
+    hs.type = 'text/javascript';
+    hs.async = true;
 
-      hs.type = 'text/javascript';
-      hs.async = true;
+    hs.src = '//s10.histats.com/js15_as.js';
 
-      hs.src =
-        '//s10.histats.com/js15_as.js';
-
-      (
+    (
         document.getElementsByTagName('head')[0] ||
         document.getElementsByTagName('body')[0]
-      ).appendChild(hs);
+    ).appendChild(hs);
 
-    })();
+})();
+</script>
 
-  </script>
-
-
-  <noscript>
-
+<noscript>
     <a href="/" target="_blank">
-
-      <img
-        src="//sstatic1.histats.com/0.gif?4425861&101"
-        alt=""
-        border="0"
-      >
-
+        <img
+            src="//sstatic1.histats.com/0.gif?4425861&101"
+            alt=""
+            border="0">
     </a>
-
-  </noscript>
+</noscript>
 
 </body>
 </html>
