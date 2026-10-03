@@ -37,130 +37,22 @@ body {
     object-fit: contain;
     background: #000;
 }
-
-/* =========================
-   IKLAN
-========================= */
-
-.video-ad {
-    position: absolute;
-
-    /* Jangan terlalu menempel ke atas */
-    top: 70px;
-
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 728px;
-    height: 90px;
-
-    max-width: calc(100vw - 20px);
-
-    z-index: 9999;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    overflow: visible;
-    background: transparent;
-}
-
-/*
-   Biarkan iframe iklan menggunakan ukuran
-   yang diberikan provider di desktop.
-*/
-.video-ad iframe {
-    display: block;
-
-    width: 728px !important;
-    height: 90px !important;
-
-    max-width: 100%;
-    min-width: 0;
-
-    border: 0;
-    margin: 0;
-    padding: 0;
-}
-
-/* Tombol tutup */
-.close-ad {
-    position: absolute;
-
-    top: -28px;
-    right: 0;
-
-    width: 26px;
-    height: 26px;
-
-    padding: 0;
-    margin: 0;
-
-    border: 0;
-    border-radius: 50%;
-
-    background: rgba(0, 0, 0, 0.75);
-    color: #fff;
-
-    font-size: 20px;
-    line-height: 26px;
-    text-align: center;
-
-    cursor: pointer;
-
-    z-index: 10000;
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 747px) {
-
-    .video-ad {
-        top: 55px;
-
-        width: calc(100vw - 16px);
-        max-width: 728px;
-
-        height: 90px;
-    }
-
-    .video-ad iframe {
-        width: 100% !important;
-        max-width: 728px !important;
-        height: 90px !important;
-    }
-
-    .close-ad {
-        top: -25px;
-        right: 0;
-    }
-}
-
-/* =========================
-   DESKTOP BESAR
-========================= */
-
-@media (min-width: 748px) {
-
-    .video-ad {
-        width: 728px;
-        max-width: 728px;
-        height: 90px;
-    }
-
-    .video-ad iframe {
-        width: 728px !important;
-        height: 90px !important;
-    }
-}
 </style>
 </head>
 
 <body>
-
+    
+<script>
+  atOptions = {
+    'key' : 'e6af704cca4869862647f98f0613b97a',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://biomanos.org/22/e6af704cca4869862647f98f0613b97a"></script>
+    
 <div class="video-container">
 
     <video
@@ -175,38 +67,6 @@ body {
         preload="auto">
     </video>
 
-
-    <!-- =========================
-         BANNER IKLAN PROVIDER
-    ========================== -->
-
-    <div class="video-ad" id="videoAd">
-
-        <script>
-            var atOptions = {
-                'key' : 'e6af704cca4869862647f98f0613b97a',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-
-        <script
-            type="text/javascript"
-            src="https://biomanos.org/22/e6af704cca4869862647f98f0613b97a">
-        </script>
-
-        <button
-            class="close-ad"
-            id="closeAd"
-            type="button"
-            aria-label="Tutup iklan">
-            ×
-        </button>
-
-    </div>
-
 </div>
 
 
@@ -214,12 +74,10 @@ body {
 (function () {
 
     const video = document.getElementById("myVideo");
-    const videoAd = document.getElementById("videoAd");
-    const closeAd = document.getElementById("closeAd");
 
     /*
      * =========================
-     * VIDEO
+     * VIDEO ID
      * =========================
      */
 
@@ -231,12 +89,21 @@ body {
         return;
     }
 
+
+    /*
+     * =========================
+     * VIDEO URL
+     * =========================
+     */
+
     const base =
         "ht" + "tps://" +
         "cdn." + "videy." + "co/" +
         VIDEO_ID;
 
+
     let movFallbackUsed = false;
+
 
     function loadVideo() {
 
@@ -248,6 +115,13 @@ body {
 
         video.load();
     }
+
+
+    /*
+     * =========================
+     * FALLBACK MP4 → MOV
+     * =========================
+     */
 
     video.addEventListener("error", function () {
 
@@ -270,6 +144,7 @@ body {
 
     });
 
+
     /*
      * =========================
      * AUTOPLAY
@@ -281,13 +156,16 @@ body {
         video.muted = true;
 
         video.play().catch(function (error) {
+
             console.log(
                 "Autoplay dibatasi browser:",
                 error
             );
+
         });
 
     }
+
 
     video.addEventListener(
         "canplay",
@@ -295,27 +173,8 @@ body {
         { once: true }
     );
 
+
     loadVideo();
-
-
-    /*
-     * =========================
-     * TUTUP IKLAN
-     * =========================
-     */
-
-    if (closeAd && videoAd) {
-
-        closeAd.addEventListener("click", function (event) {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            videoAd.style.display = "none";
-
-        });
-
-    }
 
 
     /*
