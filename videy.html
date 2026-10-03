@@ -16,69 +16,64 @@
     body {
       margin: 0;
       padding: 0;
-      min-height: 100%;
       width: 100%;
+      height: 100%;
       background: #000;
+      overflow: hidden;
     }
 
     body {
       color: #fff;
     }
 
-    /* Responsive Video Container */
+    /* Fullscreen Video Container */
     .video-container {
       position: relative;
-      width: 100%;
-      max-width: 850px;
-      margin: 50px auto;
-      padding: 0 15px;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
     }
 
-    /* Responsive Video Player */
+    /* Fullscreen Video */
     .video-container video {
       display: block;
       width: 100%;
-      height: auto;
-      max-width: 100%;
-      border-radius: 8px;
-      background: #000;
+      height: 100%;
       object-fit: contain;
+      object-position: center;
+      border: 0;
+      border-radius: 0;
+      background: #000;
     }
 
-    /* Tablet */
-    @media (max-width: 1024px) {
-      .video-container {
-        max-width: 100%;
-        margin: 35px auto;
-        padding: 0 15px;
-      }
+    /* Browser Fullscreen Mode */
+    .video-container:fullscreen {
+      width: 100%;
+      height: 100%;
+      background: #000;
     }
 
-    /* Mobile */
-    @media (max-width: 600px) {
-      .video-container {
-        width: 100%;
-        max-width: 100%;
-        margin: 20px auto;
-        padding: 0 10px;
-      }
+    .video-container:-webkit-full-screen {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
 
+    /* Portrait Device */
+    @media (orientation: portrait) {
       .video-container video {
-        width: 100%;
-        height: auto;
-        border-radius: 6px;
+        object-fit: contain;
       }
     }
 
-    /* Small Mobile */
-    @media (max-width: 360px) {
-      .video-container {
-        padding: 0 8px;
-        margin: 15px auto;
-      }
-
+    /* Landscape Device */
+    @media (orientation: landscape) {
       .video-container video {
-        border-radius: 4px;
+        object-fit: contain;
       }
     }
   </style>
@@ -86,7 +81,7 @@
 
 <body>
 
-  <main class="video-container">
+  <main class="video-container" id="videoContainer">
 
     <video
       id="myVideo"
@@ -102,6 +97,7 @@
 
   <script>
     const video = document.getElementById("myVideo");
+    const container = document.getElementById("videoContainer");
     const params = new URLSearchParams(location.search);
     const VIDEO_ID = params.get("id");
 
@@ -147,9 +143,31 @@
       message.textContent = "Video not found";
       message.style.textAlign = "center";
 
-      document.querySelector(".video-container")
-        .appendChild(message);
+      message.style.position = "absolute";
+      message.style.top = "50%";
+      message.style.left = "50%";
+      message.style.transform = "translate(-50%, -50%)";
+
+      container.appendChild(message);
     }
+
+    // Fullscreen saat pengguna berinteraksi
+    async function enterFullscreen() {
+      try {
+        if (!document.fullscreenElement) {
+          if (container.requestFullscreen) {
+            await container.requestFullscreen();
+          } else if (container.webkitRequestFullscreen) {
+            container.webkitRequestFullscreen();
+          }
+        }
+      } catch (error) {
+        console.log("Fullscreen tidak tersedia:", error);
+      }
+    }
+
+    // Tidak memaksa fullscreen saat halaman dibuka.
+    // Pengguna dapat menggunakan kontrol fullscreen browser.
   </script>
 
   <script>
