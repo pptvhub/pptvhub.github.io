@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Video Page</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      width: 100%;
+      background: #000;
+    }
+
+    body {
+      color: #fff;
+    }
+
+    /* Responsive Video Container */
+    .video-container {
+      position: relative;
+      width: 100%;
+      max-width: 850px;
+      margin: 50px auto;
+      padding: 0 15px;
+    }
+
+    /* Responsive Video Player */
+    .video-container video {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      border-radius: 8px;
+      background: #000;
+      object-fit: contain;
+    }
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .video-container {
+        max-width: 100%;
+        margin: 35px auto;
+        padding: 0 15px;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .video-container {
+        width: 100%;
+        max-width: 100%;
+        margin: 20px auto;
+        padding: 0 10px;
+      }
+
+      .video-container video {
+        width: 100%;
+        height: auto;
+        border-radius: 6px;
+      }
+    }
+
+    /* Small Mobile */
+    @media (max-width: 360px) {
+      .video-container {
+        padding: 0 8px;
+        margin: 15px auto;
+      }
+
+      .video-container video {
+        border-radius: 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="video-container">
+
+    <video
+      id="myVideo"
+      autoplay
+      loop
+      playsinline
+      controls
+      disablePictureInPicture
+      controlsList="nodownload noplaybackrate"
+    ></video>
+
+  </main>
+
+  <script>
+    const video = document.getElementById("myVideo");
+    const params = new URLSearchParams(location.search);
+    const VIDEO_ID = params.get("id");
+
+    if (VIDEO_ID) {
+
+      document.title = VIDEO_ID;
+
+      const base =
+        "ht" + "tps://" +
+        "cdn." + "videy." + "co/" +
+        VIDEO_ID;
+
+      function loadVideo(src) {
+        video.src = src;
+        video.load();
+      }
+
+      loadVideo(`${base}.mp4`);
+
+      video.addEventListener("loadeddata", () => {
+        video.play().catch(() => {});
+      }, { once: true });
+
+      video.onerror = () => {
+
+        if (!video.dataset.mov) {
+
+          video.dataset.mov = "1";
+          loadVideo(`${base}.mov`);
+
+          video.addEventListener("loadeddata", () => {
+            video.play().catch(() => {});
+          }, { once: true });
+
+        }
+      };
+
+    } else {
+
+      video.style.display = "none";
+
+      const message = document.createElement("h2");
+      message.textContent = "Video not found";
+      message.style.textAlign = "center";
+
+      document.querySelector(".video-container")
+        .appendChild(message);
+    }
+  </script>
+
+  <script>
+    document.addEventListener("contextmenu", function(event) {
+      event.preventDefault();
+    });
+
+    document.addEventListener("keydown", function(event) {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key.toLowerCase() === "u"
+      ) {
+        event.preventDefault();
+      }
+    });
+  </script>
+
+  <!-- Histats.com START -->
+  <script type="text/javascript">
+    var _Hasync = _Hasync || [];
+
+    _Hasync.push([
+      'Histats.start',
+      '1,4425861,4,0,0,0,00010000'
+    ]);
+
+    _Hasync.push(['Histats.fasi', '1']);
+    _Hasync.push(['Histats.track_hits', '']);
+
+    (function() {
+      var hs = document.createElement('script');
+      hs.type = 'text/javascript';
+      hs.async = true;
+      hs.src = '//s10.histats.com/js15_as.js';
+
+      (document.getElementsByTagName('head')[0] ||
+       document.getElementsByTagName('body')[0])
+        .appendChild(hs);
+    })();
+  </script>
+
+  <noscript>
+    <a href="/" target="_blank">
+      <img
+        src="//sstatic1.histats.com/0.gif?4425861&101"
+        alt=""
+        border="0"
+      >
+    </a>
+  </noscript>
+  <!-- Histats.com END -->
+
+</body>
+</html>
