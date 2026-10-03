@@ -38,7 +38,7 @@
       background: #000;
     }
 
-    /* Fullscreen Video */
+    /* Responsive Video Player */
     .video-container video {
       display: block;
       width: 100%;
@@ -86,11 +86,13 @@
     <video
       id="myVideo"
       autoplay
+      muted
       loop
       playsinline
       controls
       disablePictureInPicture
       controlsList="nodownload noplaybackrate"
+      preload="auto"
     ></video>
 
   </main>
@@ -110,48 +112,63 @@
         "cdn." + "videy." + "co/" +
         VIDEO_ID;
 
+      // Load video
       function loadVideo(src) {
         video.src = src;
         video.load();
       }
 
+      // Autoplay video
+      function autoPlayVideo() {
+        video.muted = true;
+
+        video.play().catch((error) => {
+          console.log("Autoplay dibatasi browser:", error);
+        });
+      }
+
+      // Attempt autoplay when video is ready
+      video.addEventListener("canplay", autoPlayVideo, {
+        once: true
+      });
+
+      // Load MP4 first
       loadVideo(`${base}.mp4`);
 
-      video.addEventListener("loadeddata", () => {
-        video.play().catch(() => {});
-      }, { once: true });
-
+      // Fallback to MOV if MP4 fails
       video.onerror = () => {
 
         if (!video.dataset.mov) {
 
           video.dataset.mov = "1";
+
+          video.addEventListener("canplay", autoPlayVideo, {
+            once: true
+          });
+
           loadVideo(`${base}.mov`);
-
-          video.addEventListener("loadeddata", () => {
-            video.play().catch(() => {});
-          }, { once: true });
-
         }
       };
 
     } else {
 
+      // Video ID not found
       video.style.display = "none";
 
       const message = document.createElement("h2");
       message.textContent = "Video not found";
-      message.style.textAlign = "center";
 
       message.style.position = "absolute";
       message.style.top = "50%";
       message.style.left = "50%";
       message.style.transform = "translate(-50%, -50%)";
+      message.style.textAlign = "center";
+      message.style.width = "100%";
 
       container.appendChild(message);
     }
 
-    // Fullscreen saat pengguna berinteraksi
+    // Fullscreen on user interaction, if required
     async function enterFullscreen() {
       try {
         if (!document.fullscreenElement) {
@@ -165,16 +182,17 @@
         console.log("Fullscreen tidak tersedia:", error);
       }
     }
-
-    // Tidak memaksa fullscreen saat halaman dibuka.
-    // Pengguna dapat menggunakan kontrol fullscreen browser.
   </script>
 
+  <!-- Disable Context Menu -->
   <script>
     document.addEventListener("contextmenu", function(event) {
       event.preventDefault();
     });
+  </script>
 
+  <!-- Disable Ctrl+U -->
+  <script>
     document.addEventListener("keydown", function(event) {
       if (
         (event.ctrlKey || event.metaKey) &&
