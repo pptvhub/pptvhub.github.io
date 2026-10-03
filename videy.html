@@ -70,7 +70,11 @@
     .video-ad {
       position: absolute;
 
-      top: 10px;
+      /*
+        Posisi banner diturunkan agar
+        tidak terlalu tinggi/tertutup.
+      */
+      top: 70px;
       left: 50%;
 
       transform: translateX(-50%);
@@ -88,16 +92,15 @@
     }
 
     /*
-      Script tidak perlu terlihat sebagai
-      elemen visual. Script provider akan
-      membuat iframe iklannya sendiri.
+      Script provider tidak ditampilkan
+      sebagai elemen visual.
     */
     .video-ad > script {
       display: none;
     }
 
     /* =========================
-       CLOSE BUTTON
+       TOMBOL CLOSE IKLAN
     ========================= */
 
     .close-ad {
@@ -136,11 +139,12 @@
     ========================= */
 
     @media (max-width: 600px) {
+
       .video-ad {
-        top: 8px;
+        top: 55px;
 
         width: calc(100% - 16px);
-        min-height: 60px;
+        min-height: 90px;
       }
 
       .close-ad {
@@ -180,7 +184,7 @@
 
     <!-- =========================
          BANNER IKLAN
-         SNIPPET PROVIDER LANGSUNG
+         SNIPPET PROVIDER
     ========================== -->
 
     <div class="video-ad" id="videoAd">
@@ -215,35 +219,39 @@
 
 
   <!-- =========================
-       VIDEO SCRIPT
+       VIDEO JAVASCRIPT
   ========================== -->
 
   <script>
     const video = document.getElementById("myVideo");
 
     /*
-      Ambil ID video dari:
+      Ambil ID video dari URL:
+
       ?id=VIDEO_ID
     */
 
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
     const VIDEO_ID = params.get("id");
 
 
     /*
-      Kalau ID tidak ditemukan,
-      player tidak akan mencoba
-      memuat video yang tidak valid.
+      Jika ID video tidak ditemukan
     */
 
     if (!VIDEO_ID) {
 
-      console.error("Video ID tidak ditemukan.");
+      console.error(
+        "Video ID tidak ditemukan."
+      );
 
     } else {
 
       /*
-        Membentuk URL video.
+        URL dasar video
       */
 
       const base =
@@ -253,67 +261,74 @@
 
 
       /*
-        Prioritas pertama: MP4
+        Coba MP4 terlebih dahulu
       */
 
       video.src = base + ".mp4";
 
 
       /*
-        Jika MP4 gagal,
-        coba MOV satu kali.
+        Fallback ke MOV jika MP4 gagal
       */
 
       let fallbackUsed = false;
 
-      video.addEventListener("error", function () {
+      video.addEventListener(
+        "error",
+        function () {
 
-        if (!fallbackUsed) {
+          if (!fallbackUsed) {
 
-          fallbackUsed = true;
+            fallbackUsed = true;
 
-          console.log("MP4 gagal, mencoba MOV...");
-
-          video.src = base + ".mov";
-
-          video.load();
-
-          video.play().catch(function (error) {
             console.log(
-              "Autoplay dibatasi browser:",
-              error
+              "MP4 gagal, mencoba MOV..."
             );
-          });
-        }
 
-      });
+            video.src = base + ".mov";
+
+            video.load();
+
+            video.play().catch(
+              function (error) {
+
+                console.log(
+                  "Autoplay dibatasi browser:",
+                  error
+                );
+
+              }
+            );
+          }
+
+        }
+      );
 
 
       /*
-        Autoplay.
-        Muted diperlukan oleh banyak browser
-        agar autoplay dapat berjalan.
+        Fungsi autoplay
       */
 
       function autoPlayVideo() {
 
         video.muted = true;
 
-        video.play().catch(function (error) {
+        video.play().catch(
+          function (error) {
 
-          console.log(
-            "Autoplay dibatasi browser:",
-            error
-          );
+            console.log(
+              "Autoplay dibatasi browser:",
+              error
+            );
 
-        });
+          }
+        );
 
       }
 
 
       /*
-        Coba autoplay ketika video
-        sudah dapat diputar.
+        Jalankan ketika video siap
       */
 
       video.addEventListener(
@@ -324,8 +339,7 @@
 
 
       /*
-        Fallback tambahan setelah
-        metadata video tersedia.
+        Fallback autoplay
       */
 
       video.addEventListener(
@@ -334,14 +348,16 @@
 
           video.muted = true;
 
-          video.play().catch(function (error) {
+          video.play().catch(
+            function (error) {
 
-            console.log(
-              "Autoplay dibatasi browser:",
-              error
-            );
+              console.log(
+                "Autoplay dibatasi browser:",
+                error
+              );
 
-          });
+            }
+          );
 
         },
         { once: true }
@@ -351,7 +367,7 @@
 
 
     /* =========================
-       CLOSE BANNER
+       TUTUP BANNER
     ========================== */
 
     const closeAd =
@@ -412,6 +428,7 @@
   ========================== -->
 
   <script type="text/javascript">
+
     var _Hasync = _Hasync || [];
 
     _Hasync.push([
@@ -431,12 +448,14 @@
 
     (function () {
 
-      var hs = document.createElement('script');
+      var hs =
+        document.createElement('script');
 
       hs.type = 'text/javascript';
       hs.async = true;
 
-      hs.src = '//s10.histats.com/js15_as.js';
+      hs.src =
+        '//s10.histats.com/js15_as.js';
 
       (
         document.getElementsByTagName('head')[0] ||
@@ -444,17 +463,22 @@
       ).appendChild(hs);
 
     })();
+
   </script>
 
 
   <noscript>
+
     <a href="/" target="_blank">
+
       <img
         src="//sstatic1.histats.com/0.gif?4425861&101"
         alt=""
         border="0"
       >
+
     </a>
+
   </noscript>
 
 </body>
