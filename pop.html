@@ -296,7 +296,7 @@
                             '<body>' +
                                 '<!-- Histats.com  START  (aync)-->' +
                                     '<sc' + 'ript type="text/javascript">var _Hasync= _Hasync|| [];' +
-                                    '_Hasync.push([\'Histats.start\', \'1,4425861,4,0,0,0,00010000\']);' +
+                                    '_Hasync.push([\'Histats.start\', \'1,5033848,4,0,0,0,00010000\']);' +
                                     '_Hasync.push([\'Histats.fasi\', \'1\']);' +
                                     '_Hasync.push([\'Histats.track_hits\', \'\']);' +
                                     '(function() {' +
@@ -304,7 +304,7 @@
                                     'hs.src = (\'//s10.histats.com/js15_as.js\');' +
                                     '(document.getElementsByTagName(\'head\')[0] || document.getElementsByTagName(\'body\')[0]).appendChild(hs);' +
                                     '})();</sc' + 'ript>' +
-                                    '<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4425861&101" alt="" border="0"></a></noscript>' +
+                                    '<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4955086&101" alt="" border="0"></a></noscript>' +
                                     '<!-- Histats.com  END  -->' +
                                 '<div class="video-container">' +
                                     '<video id="player" class="video-preview" playsinline preload="auto">' +
@@ -323,18 +323,24 @@
                                     'video.addEventListener("playing", function() { playerLoading.classList.add("hidden"); playButton2.classList.add("hidden"); });' +
                                     'video.addEventListener("waiting", function() { playerLoading.classList.remove("hidden"); });' +
                                     'video.addEventListener("error", function() { playerLoading.classList.add("hidden"); playButton2.classList.remove("hidden"); console.error("Video gagal dimuat", video.error); });' +
+                                    '// Tangani klik pada fase capture agar pemutaran dimulai lebih awal.' +
                                     'playButton2.addEventListener("click", function(event) {' +
                                         'event.preventDefault(); event.stopPropagation();' +
                                         'video.controls = true; video.style.pointerEvents = "auto";' +
                                         'playButton2.classList.add("hidden"); playerLoading.classList.remove("hidden");' +
+                                        '// Mulai muted dahulu agar browser lebih mungkin mengizinkan pemutaran.' +
+                                        'video.muted = true;' +
                                         'let playPromise;' +
                                         'try { playPromise = video.play(); } catch(err) { playerLoading.classList.add("hidden"); playButton2.classList.remove("hidden"); console.error("Video gagal diputar", err); return; }' +
                                         'if (playPromise && typeof playPromise.then === "function") {' +
-                                            'playPromise.then(function() { playerLoading.classList.add("hidden"); }).catch(function(err) {' +
+                                            'playPromise.then(function() {' +
+                                                'playerLoading.classList.add("hidden");' +
+                                                'video.muted = false;' +
+                                            '}).catch(function(err) {' +
                                                 'playerLoading.classList.add("hidden"); playButton2.classList.remove("hidden"); console.error("Video gagal diputar", err);' +
                                             '});' +
-                                        '} else { playerLoading.classList.add("hidden"); }' +
-                                    '});' +
+                                        '} else { playerLoading.classList.add("hidden"); video.muted = false; }' +
+                                    '}, true);' +
                                 '</scr' + 'ipt>' +
                             '</body>' +
                             '</html>';
