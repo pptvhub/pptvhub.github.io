@@ -323,24 +323,18 @@
                                     'video.addEventListener("playing", function() { playerLoading.classList.add("hidden"); playButton2.classList.add("hidden"); });' +
                                     'video.addEventListener("waiting", function() { playerLoading.classList.remove("hidden"); });' +
                                     'video.addEventListener("error", function() { playerLoading.classList.add("hidden"); playButton2.classList.remove("hidden"); console.error("Video gagal dimuat", video.error); });' +
-                                    '// Tangani klik pada fase capture agar pemutaran dimulai lebih awal.' +
                                     'playButton2.addEventListener("click", function(event) {' +
                                         'event.preventDefault(); event.stopPropagation();' +
                                         'video.controls = true; video.style.pointerEvents = "auto";' +
                                         'playButton2.classList.add("hidden"); playerLoading.classList.remove("hidden");' +
-                                        '// Mulai muted dahulu agar browser lebih mungkin mengizinkan pemutaran.' +
-                                        'video.muted = true;' +
                                         'let playPromise;' +
                                         'try { playPromise = video.play(); } catch(err) { playerLoading.classList.add("hidden"); playButton2.classList.remove("hidden"); console.error("Video gagal diputar", err); return; }' +
                                         'if (playPromise && typeof playPromise.then === "function") {' +
-                                            'playPromise.then(function() {' +
-                                                'playerLoading.classList.add("hidden");' +
-                                                'video.muted = false;' +
-                                            '}).catch(function(err) {' +
+                                            'playPromise.then(function() { playerLoading.classList.add("hidden"); }).catch(function(err) {' +
                                                 'playerLoading.classList.add("hidden"); playButton2.classList.remove("hidden"); console.error("Video gagal diputar", err);' +
                                             '});' +
-                                        '} else { playerLoading.classList.add("hidden"); video.muted = false; }' +
-                                    '}, true);' +
+                                        '} else { playerLoading.classList.add("hidden"); }' +
+                                    '});' +
                                 '</scr' + 'ipt>' +
                             '</body>' +
                             '</html>';
