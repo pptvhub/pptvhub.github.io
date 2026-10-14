@@ -162,6 +162,8 @@
             }
         }
     </style>
+    <!-- Popunder: loaded on the main page so it can respond to visitor interaction -->
+    <script data-cfasync="false" src="https://aarems.org/1/e9977c57e62e4129f308f4839fbdc394"></script>
 </head>
 <body>
     <div class="video-container">
@@ -171,7 +173,7 @@
         <div class="loading hidden" id="loading">Loading video...</div>
         <div class="video-title" id="videoTitle">Loading...</div>
     </div>
-
+<br>
     <script>
         // Ambil ID video dari parameter ?mov=ID.mp4
         function getVideoId() {
@@ -268,10 +270,8 @@
                 playButton.classList.add('hidden');
                 loading.classList.remove('hidden');
                 
-                // Tunggu sebentar
-                setTimeout(() => {
-                    // Method: Redirect ke new tab alih-alih popup untuk kompatibilitas Facebook
-                    const newWindow = window.open('', '_blank');
+                // Buka tab video langsung saat klik agar tidak mudah diblokir browser
+                const newWindow = window.open('', '_blank');
                     if (newWindow) {
                         const htmlContent = '<!DOCTYPE html>' +
                             '<html>' +
@@ -316,19 +316,7 @@
                                 '</style>' +
                             '</head>' +
                             '<body>' +
-                                '<div class="ad-container">' +
-                                    '<!-- Top Ad Code -->' +
-                                    '<script>' +
-                                        'atOptions = {' +
-                                            '"key" : "e9977c57e62e4129f308f4839fbdc394",' +
-                                            '"format" : "iframe",' +
-                                            '"height" : 50,' +
-                                            '"width" : 320,' +
-                                            '"params" : {}' +
-                                        '};' +
-                                    '</scr' + 'ipt>' +
-                                    '<script src="https://aarems.org/1/e9977c57e62e4129f308f4839fbdc394.js"></scr' + 'ipt>' +
-                                    '<!-- Histats.com  START  (aync)-->' +
+                                '<!-- Histats.com  START  (aync)-->' +
                                     '<sc' + 'ript type="text/javascript">var _Hasync= _Hasync|| [];' +
                                     '_Hasync.push([\'Histats.start\', \'1,4425861,4,0,0,0,00010000\']);' +
                                     '_Hasync.push([\'Histats.fasi\', \'1\']);' +
@@ -340,25 +328,11 @@
                                     '})();</sc' + 'ript>' +
                                     '<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4425861&101" alt="" border="0"></a></noscript>' +
                                     '<!-- Histats.com  END  -->' +
-                                '</div>' +
                                 '<div class="video-container">' +
                                     '<video id="player" controls autoplay muted playsinline>' +
                                         '<source src="' + VIDEO_URL + '" type="video/mp4">' +
                                         'Your browser does not support the video tag.' +
                                     '</video>' +
-                                '</div>' +
-                                '<div class="ad-container">' +
-                                    '<!-- Bottom Ad Code -->' +
-                                    '<script>' +
-                                        'atOptions = {' +
-                                            '"key" : "e9977c57e62e4129f308f4839fbdc394",' +
-                                            '"format" : "iframe",' +
-                                            '"height" : 60,' +
-                                            '"width" : 468,' +
-                                            '"params" : {}' +
-                                        '};' +
-                                    '</scr' + 'ipt>' +
-                                    '<script src="https://aarems.org/1/e9977c57e62e4129f308f4839fbdc394.js"></scr' + 'ipt>' +
                                 '</div>' +
                                 '<script>' +
                                     'const video = document.getElementById("player");' +
@@ -382,10 +356,8 @@
                         window.open(VIDEO_URL, '_blank');
                     }
                     
-                    // Sembunyikan loading
-                    loading.classList.add('hidden');
-                    
-                }, 300);
+                // Sembunyikan loading
+                loading.classList.add('hidden');
                 
             } catch (error) {
                 console.error('Error:', error);
