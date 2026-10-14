@@ -1,360 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REDBUL MEDIA</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-        }
-        
-        .video-container {
-            position: relative;
-            width: 100%;
-            max-width: 450px;  /* Lebar maks untuk 9:16 */
-            aspect-ratio: 9/16; /* Portrait mode */
-            overflow: hidden;
-            border-radius: 8px;
-            margin: 20px auto; /* Center horizontal */
-        }
-        
-        .video-preview {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: blur(0px) brightness(0.9);
-            transition: filter 0.3s ease;
-            /* Sembunyikan controls di tampilan awal */
-            pointer-events: none;
-        }
-        
-        .video-container:hover .video-preview {
-            filter: blur(0px) brightness(1);
-        }
-        
-        .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.7);
-            border: 2px solid white;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            transition: all 0.3s ease;
-        }
-        
-        .play-button:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-        
-        .play-button::after {
-            content: "";
-            display: block;
-            width: 0;
-            height: 0;
-            border-top: 12px solid transparent;
-            border-bottom: 12px solid transparent;
-            border-left: 20px solid white;
-            margin-left: 4px;
-        }
-        
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 16px;
-            z-index: 20;
-            background: rgba(0,0,0,0.7);
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .video-title {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            color: white;
-            font-size: 14px;
-            background: rgba(0,0,0,0.5);
-            padding: 6px 12px;
-            border-radius: 4px;
-            z-index: 15;
-            max-width: 80%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        /* Mobile optimization */
-        @media (max-width: 768px) {
-            .video-container {
-                margin: 10px auto;
-                border-radius: 4px;
-                max-width: 350px;
-            }
-            
-            .play-button {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .play-button::after {
-                border-top: 10px solid transparent;
-                border-bottom: 10px solid transparent;
-                border-left: 16px solid white;
-                margin-left: 3px;
-            }
-            
-            .video-title {
-                font-size: 12px;
-                bottom: 10px;
-                left: 10px;
-                padding: 4px 8px;
-            }
-            
-            .loading {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .video-container {
-                max-width: 300px;
-            }
-            
-            .play-button {
-                width: 45px;
-                height: 45px;
-            }
-            
-            .play-button::after {
-                border-top: 8px solid transparent;
-                border-bottom: 8px solid transparent;
-                border-left: 13px solid white;
-                margin-left: 2px;
-            }
-            
-            .video-title {
-                font-size: 11px;
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101010">
+<title>Watch Video</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#101010;color:#fff;font-family:Arial,Helvetica,sans-serif}
+body{display:grid;place-items:center;padding:22px}
+.page{width:min(100%,430px);text-align:center}
+.brand{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#aaa;margin-bottom:18px}
+.video-card{position:relative;overflow:hidden;width:100%;aspect-ratio:9/16;max-height:76vh;border-radius:12px;background:radial-gradient(ellipse at 50% 35%,#454545 0,#252525 32%,#111 76%);border:1px solid #333;display:grid;place-items:center;cursor:pointer;box-shadow:0 18px 55px #0009}
+.video-card:before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#000b,transparent 40%,#0002)}
+.play{position:relative;width:76px;height:76px;border-radius:50%;background:#ffffffea;display:grid;place-items:center;box-shadow:0 4px 24px #0008;transition:transform .2s}
+.play:after{content:"";margin-left:6px;border-top:15px solid transparent;border-bottom:15px solid transparent;border-left:23px solid #151515}
+.video-card:hover .play{transform:scale(1.08)}
+.label{position:absolute;bottom:18px;left:16px;right:16px;text-align:left;font-size:13px;color:#fff;background:#0008;padding:10px 12px;border-radius:6px}
+h1{font-size:22px;margin:22px 0 8px;font-weight:700}
+p{color:#aaa;font-size:14px;line-height:1.5;margin:0}
+.note{font-size:11px;color:#777;margin-top:16px}
+button{font:inherit}
+</style>
 </head>
 <body>
-    <div class="video-container">
-        <!-- Video preview yang terlihat di tampilan awal -->
-        <video class="video-preview" id="videoPreview" muted playsinline preload="metadata"></video>
-        <div class="play-button" id="playButton"></div>
-        <div class="loading hidden" id="loading">Loading video...</div>
-        <div class="video-title" id="videoTitle">Loading...</div>
-    </div>
-<br>
-    <script>
-        // Ambil ID video dari parameter ?mov=ID.mp4
-        function getVideoId() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const movParam = urlParams.get('mov');
-            if (movParam) {
-                // Hapus .mp4 jika ada
-                return movParam.replace('.mp4', '');
-            }
-            return 'CXdziPvQ1'; // default
-        }
-        
-        const videoId = getVideoId();
-        const VIDEO_URL = `https://cdn.slicedrive.com/${videoId}.mp4`;
-        
-        // Tampilkan preview video (video element sebagai preview)
-        const videoPreview = document.getElementById('videoPreview');
-        const videoTitle = document.getElementById('videoTitle');
-        const playButton = document.getElementById('playButton');
-        const loading = document.getElementById('loading');
-        
-        // Pastikan play button selalu terlihat
-        playButton.style.display = 'flex';
-        
-        // Setup video preview
-        videoPreview.muted = true;
-        videoPreview.playsInline = true;
-        videoPreview.preload = 'metadata';
-        videoPreview.src = VIDEO_URL;
-        
-        // Tunggu video load
-        videoPreview.addEventListener('loadeddata', () => {
-            // Video sudah siap, sembunyikan loading
-            loading.classList.add('hidden');
-            videoTitle.textContent = `Video: ${videoId}`;
-            
-            // Jangan play otomatis - biarkan video paused di frame pertama
-            // Hanya seek ke frame pertama untuk menampilkan thumbnail
-            videoPreview.currentTime = 0.1; // Frame pertama
-        });
-        
-        // Error handling
-        videoPreview.addEventListener('error', () => {
-            createPlaceholder();
-            loading.classList.add('hidden');
-        });
-        
-        // Timeout protection
-        setTimeout(() => {
-            if (videoPreview.readyState < 2) { // HAVE_CURRENT_DATA
-                createPlaceholder();
-            }
-            loading.classList.add('hidden');
-            playButton.style.display = 'flex';
-        }, 5000);
-        
-        function createPlaceholder() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 450;
-            canvas.height = 800;
-            
-            // Gradient background
-            const gradient = ctx.createLinearGradient(0, 0, 0, 800);
-            gradient.addColorStop(0, '#1a1a2e');
-            gradient.addColorStop(0.5, '#16213e');
-            gradient.addColorStop(1, '#0f3460');
-            
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 450, 800);
-            
-            // Teks
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            ctx.font = 'bold 20px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('VIDEO PLAYER', 225, 350);
-            ctx.font = '16px Arial';
-            ctx.fillText(videoId, 225, 380);
-            
-            // Convert to image and use as video poster
-            videoPreview.poster = canvas.toDataURL();
-            playButton.style.display = 'flex';
-        }
-        
-        // Set initial video title
-        videoTitle.textContent = `Video: ${videoId}`;
-        
-        // Play button handler
-        playButton.addEventListener('click', playVideo);
-        
-        function playVideo() {
-            try {
-                // Sembunyikan tombol play, tampilkan loading
-                playButton.classList.add('hidden');
-                loading.classList.remove('hidden');
-                
-                // Buka tab video langsung saat klik agar tidak mudah diblokir browser
-                const newWindow = window.open('', '_blank');
-                    if (newWindow) {
-                        const htmlContent = '<!DOCTYPE html>' +
-                            '<html>' +
-                            '<head>' +
-                                '<title>Video Player</title>' +
-                                '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
-                                '<script data-cfasync="false" src="https://aarems.org/1/e9977c57e62e4129f308f4839fbdc394"><\/script>' +
-                                '<style>' +
-                                    '* { box-sizing: border-box; }' +
-                                    'body { margin: 0; padding: 0; background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: Arial, sans-serif; }' +
-                                    '.video-container { position: relative; width: 100%; max-width: 450px; aspect-ratio: 9/16; overflow: hidden; border-radius: 8px; margin: 20px auto; background: #111; }' +
-                                    '.video-preview { width: 100%; height: 100%; object-fit: cover; filter: brightness(.9); transition: filter .3s ease; pointer-events: none; }' +
-                                    '.video-container:hover .video-preview { filter: brightness(1); }' +
-                                    '.play-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(0,0,0,.7); border: 2px solid #fff; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 10; transition: all .3s ease; }' +
-                                    '.play-button:hover { background: rgba(255,255,255,.2); transform: translate(-50%,-50%) scale(1.1); }' +
-                                    '.play-button:after { content: ""; display: block; width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 20px solid white; margin-left: 4px; }' +
-                                    '.hidden { display: none !important; }' +
-                                    '.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #fff; font-size: 16px; z-index: 20; background: rgba(0,0,0,.7); padding: 10px 20px; border-radius: 5px; }' +
-                                    '.video-title { position: absolute; bottom: 15px; left: 15px; color: #fff; font-size: 14px; background: rgba(0,0,0,.5); padding: 6px 12px; border-radius: 4px; z-index: 15; max-width: 80%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }' +
-                                    '@media (max-width:768px) { .video-container { margin: 10px auto; border-radius: 4px; max-width: 350px; } .play-button { width: 50px; height: 50px; } .play-button:after { border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 16px solid white; margin-left: 3px; } .video-title { font-size: 12px; bottom: 10px; left: 10px; padding: 4px 8px; } .loading { font-size: 14px; padding: 8px 16px; } }' +
-                                    '@media (max-width:480px) { .video-container { max-width: 300px; } .play-button { width: 45px; height: 45px; } .play-button:after { border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 13px solid white; margin-left: 2px; } .video-title { font-size: 11px; } }' +
-                                '</style>' +
-                            '</head>' +
-                            '<body>' +
-                                '<!-- Histats.com  START  (aync)-->' +
-                                    '<sc' + 'ript type="text/javascript">var _Hasync= _Hasync|| [];' +
-                                    '_Hasync.push([\'Histats.start\', \'1,5033848,4,0,0,0,00010000\']);' +
-                                    '_Hasync.push([\'Histats.fasi\', \'1\']);' +
-                                    '_Hasync.push([\'Histats.track_hits\', \'\']);' +
-                                    '(function() {' +
-                                    'var hs = document.createElement(\'sc' + 'ript\'); hs.type = \'text/javascript\'; hs.async = true;' +
-                                    'hs.src = (\'//s10.histats.com/js15_as.js\');' +
-                                    '(document.getElementsByTagName(\'head\')[0] || document.getElementsByTagName(\'body\')[0]).appendChild(hs);' +
-                                    '})();</sc' + 'ript>' +
-                                    '<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4955086&101" alt="" border="0"></a></noscript>' +
-                                    '<!-- Histats.com  END  -->' +
-                                '<div class="video-container">' +
-                                    '<video id="player" class="video-preview" playsinline preload="auto">' +
-                                        '<source src="' + VIDEO_URL + '" type="video/mp4">' +
-                                        'Your browser does not support the video tag.' +
-                                    '</video>' +
-                                    '<button type="button" id="playerPlayButton" class="play-button" aria-label="Play video"></button>' +
-                                    '<div id="playerLoading" class="loading hidden">Loading video...</div>' +
-                                    '<div id="playerTitle" class="video-title">Video: ' + videoId + '</div>' +
-                                '</div>' +
-                                '<script>' +
-                                    'const video = document.getElementById("player");' +
-                                    'const playButton2 = document.getElementById("playerPlayButton");' +
-                                    'const playerLoading = document.getElementById("playerLoading");' +
-                                    'video.addEventListener("loadeddata", function() { playerLoading.classList.add("hidden"); });' +
-                                    'video.addEventListener("playing", function() { playerLoading.classList.add("hidden"); playButton2.classList.add("hidden"); });' +
-                                    'video.addEventListener("waiting", function() { playerLoading.classList.remove("hidden"); });' +
-                                    'video.addEventListener("error", function() { playerLoading.classList.add("hidden"); playButton2.classList.remove("hidden"); console.error("Video gagal dimuat", video.error); });' +
-                                    'playButton2.addEventListener("click", function(event) {' +
-                                        'event.preventDefault(); event.stopPropagation();' +
-                                        'video.controls = true; video.style.pointerEvents = "auto";' +
-                                        'playButton2.classList.add("hidden"); playerLoading.classList.remove("hidden");' +
-                                        'let playPromise;' +
-                                        'try { playPromise = video.play(); } catch(err) { playerLoading.classList.add("hidden"); playButton2.classList.remove("hidden"); console.error("Video gagal diputar", err); return; }' +
-                                        'if (playPromise && typeof playPromise.then === "function") {' +
-                                            'playPromise.then(function() { playerLoading.classList.add("hidden"); }).catch(function(err) {' +
-                                                'playerLoading.classList.add("hidden"); playButton2.classList.remove("hidden"); console.error("Video gagal diputar", err);' +
-                                            '});' +
-                                        '} else { playerLoading.classList.add("hidden"); }' +
-                                    '});' +
-                                '</scr' + 'ipt>' +
-                            '</body>' +
-                            '</html>';
-                        
-                        newWindow.document.write(htmlContent);
-                        newWindow.document.close();
-                    } else {
-                        // Fallback: Redirect ke new tab dengan URL
-                        // Ini lebih kompatibel dengan Facebook browser
-                        window.open(VIDEO_URL, '_blank');
-                    }
-                    
-                // Sembunyikan loading
-                loading.classList.add('hidden');
-                
-            } catch (error) {
-                console.error('Error:', error);
-                loading.textContent = 'Error loading video';
-            }
-        }
-    </script>
+<main class="page">
+  <div class="brand">Video Player</div>
+  <button class="video-card" id="playCard" aria-label="Play video" style="padding:0;border:0;color:inherit;text-align:inherit">
+    <span class="play" aria-hidden="true"></span>
+    <span class="label" id="videoLabel">Tap to play video</span>
+  </button>
+  <h1 id="heading">Watch Video</h1>
+  <p>Tekan tombol play untuk melanjutkan ke pemutar video.</p>
+  <div class="note">If playback does not start, tap play again on the player page.</div>
+</main>
+<script>
+(function(){
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id') || 'JnggqiaU1';
+  document.getElementById('videoLabel').textContent = 'Video: ' + id;
+  document.getElementById('heading').textContent = 'Watch Video';
+  function openPlayer(){
+    location.href = 'player.html?mov=' + encodeURIComponent(id);
+  }
+  document.getElementById('playCard').addEventListener('click', openPlayer);
+})();
+</script>
 </body>
 </html>
