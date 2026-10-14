@@ -162,8 +162,6 @@
             }
         }
     </style>
-    <!-- Popunder: loaded on the main page so it can respond to visitor interaction -->
-    <script data-cfasync="false" src="https://aarems.org/1/e9977c57e62e4129f308f4839fbdc394"></script>
 </head>
 <body>
     <div class="video-container">
@@ -278,6 +276,7 @@
                             '<head>' +
                                 '<title>Video Player</title>' +
                                 '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+                                '<script data-cfasync="false" src="https://aarems.org/1/e9977c57e62e4129f308f4839fbdc394"><\/script>' +
                                 '<style>' +
                                     'body { ' +
                                         'margin: 0; ' +
@@ -329,21 +328,16 @@
                                     '<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4425861&101" alt="" border="0"></a></noscript>' +
                                     '<!-- Histats.com  END  -->' +
                                 '<div class="video-container">' +
-                                    '<video id="player" controls autoplay muted playsinline>' +
+                                    '<video id="player" controls playsinline preload="metadata">' +
                                         '<source src="' + VIDEO_URL + '" type="video/mp4">' +
                                         'Your browser does not support the video tag.' +
                                     '</video>' +
                                 '</div>' +
                                 '<script>' +
+                                    '// Video sengaja tidak autoplay; pengunjung menekan Play di tab ini.' +
+                                    '// Script Popunder dimuat di halaman player agar dapat merespons klik tersebut.' +
                                     'const video = document.getElementById("player");' +
-                                    '// Coba autoplay, jika gagal tampilkan pesan' +
-                                    'video.play().catch(e => {' +
-                                        'console.log("Autoplay blocked, user interaction required");' +
-                                        '// Tampilkan pesan untuk user click play' +
-                                        'video.addEventListener("click", function() {' +
-                                            'video.play();' +
-                                        '});' +
-                                    '});' +
+                                    'video.addEventListener("error", function() { console.error("Video gagal dimuat"); });' +
                                 '</scr' + 'ipt>' +
                             '</body>' +
                             '</html>';
