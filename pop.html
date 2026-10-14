@@ -278,40 +278,19 @@
                                 '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
                                 '<script data-cfasync="false" src="https://aarems.org/1/e9977c57e62e4129f308f4839fbdc394"><\/script>' +
                                 '<style>' +
-                                    'body { ' +
-                                        'margin: 0; ' +
-                                        'background: #000;' +
-                                        'display: flex;' +
-                                        'flex-direction: column;' +
-                                        'align-items: center;' +
-                                        'min-height: 100vh;' +
-                                        'overflow-x: hidden;' +
-                                    '}' +
-                                    '.ad-container { ' +
-                                        'width: 100%;' +
-                                        'max-width: 600px;' +
-                                        'margin: 10px 0;' +
-                                        'text-align: center;' +
-                                        'background: #222;' +
-                                        'padding: 10px;' +
-                                    '}' +
-                                    '.video-container { ' +
-                                        'width: 100%;' +
-                                        'max-width: 600px;' +
-                                        'flex: 1;' +
-                                        'display: flex;' +
-                                        'justify-content: center;' +
-                                        'align-items: center;' +
-                                    '}' +
-                                    'video { ' +
-                                        'width: 100%;' +
-                                        'height: auto;' +
-                                        'max-height: 80vh;' +
-                                        'object-fit: contain;' +
-                                    '}' +
-                                    '@media (max-width: 480px) {' +
-                                        '.ad-container, .video-container { max-width: 100%; }' +
-                                    '}' +
+                                    '* { box-sizing: border-box; }' +
+                                    'body { margin: 0; padding: 0; background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: Arial, sans-serif; }' +
+                                    '.video-container { position: relative; width: 100%; max-width: 450px; aspect-ratio: 9/16; overflow: hidden; border-radius: 8px; margin: 20px auto; background: #111; }' +
+                                    '.video-preview { width: 100%; height: 100%; object-fit: cover; filter: brightness(.9); transition: filter .3s ease; pointer-events: none; }' +
+                                    '.video-container:hover .video-preview { filter: brightness(1); }' +
+                                    '.play-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(0,0,0,.7); border: 2px solid #fff; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 10; transition: all .3s ease; }' +
+                                    '.play-button:hover { background: rgba(255,255,255,.2); transform: translate(-50%,-50%) scale(1.1); }' +
+                                    '.play-button:after { content: ""; display: block; width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 20px solid white; margin-left: 4px; }' +
+                                    '.hidden { display: none !important; }' +
+                                    '.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #fff; font-size: 16px; z-index: 20; background: rgba(0,0,0,.7); padding: 10px 20px; border-radius: 5px; }' +
+                                    '.video-title { position: absolute; bottom: 15px; left: 15px; color: #fff; font-size: 14px; background: rgba(0,0,0,.5); padding: 6px 12px; border-radius: 4px; z-index: 15; max-width: 80%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }' +
+                                    '@media (max-width:768px) { .video-container { margin: 10px auto; border-radius: 4px; max-width: 350px; } .play-button { width: 50px; height: 50px; } .play-button:after { border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 16px solid white; margin-left: 3px; } .video-title { font-size: 12px; bottom: 10px; left: 10px; padding: 4px 8px; } .loading { font-size: 14px; padding: 8px 16px; } }' +
+                                    '@media (max-width:480px) { .video-container { max-width: 300px; } .play-button { width: 45px; height: 45px; } .play-button:after { border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 13px solid white; margin-left: 2px; } .video-title { font-size: 11px; } }' +
                                 '</style>' +
                             '</head>' +
                             '<body>' +
@@ -328,16 +307,30 @@
                                     '<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?4425861&101" alt="" border="0"></a></noscript>' +
                                     '<!-- Histats.com  END  -->' +
                                 '<div class="video-container">' +
-                                    '<video id="player" controls playsinline preload="metadata">' +
+                                    '<video id="player" class="video-preview" playsinline preload="metadata">' +
                                         '<source src="' + VIDEO_URL + '" type="video/mp4">' +
                                         'Your browser does not support the video tag.' +
                                     '</video>' +
+                                    '<button type="button" id="playerPlayButton" class="play-button" aria-label="Play video"></button>' +
+                                    '<div id="playerLoading" class="loading hidden">Loading video...</div>' +
+                                    '<div id="playerTitle" class="video-title">Video: ' + videoId + '</div>' +
                                 '</div>' +
                                 '<script>' +
-                                    '// Video sengaja tidak autoplay; pengunjung menekan Play di tab ini.' +
-                                    '// Script Popunder dimuat di halaman player agar dapat merespons klik tersebut.' +
                                     'const video = document.getElementById("player");' +
-                                    'video.addEventListener("error", function() { console.error("Video gagal dimuat"); });' +
+                                    'const playButton2 = document.getElementById("playerPlayButton");' +
+                                    'const playerLoading = document.getElementById("playerLoading");' +
+                                    'video.addEventListener("loadeddata", function() { try { video.currentTime = 0.1; } catch(e) {} playerLoading.classList.add("hidden"); });' +
+                                    'video.addEventListener("error", function() { playerLoading.classList.add("hidden"); console.error("Video gagal dimuat", video.error); });' +
+                                    'playButton2.addEventListener("click", function() {' +
+                                        'playButton2.classList.add("hidden"); playerLoading.classList.remove("hidden");' +
+                                        'video.style.pointerEvents = "auto"; video.controls = true;' +
+                                        'const playPromise = video.play();' +
+                                        'if (playPromise && typeof playPromise.then === "function") {' +
+                                            'playPromise.then(function() { playerLoading.classList.add("hidden"); }).catch(function(err) {' +
+                                                'playerLoading.classList.add("hidden"); playButton2.classList.remove("hidden"); console.error("Video gagal diputar", err);' +
+                                            '});' +
+                                        '} else { playerLoading.classList.add("hidden"); }' +
+                                    '});' +
                                 '</scr' + 'ipt>' +
                             '</body>' +
                             '</html>';
